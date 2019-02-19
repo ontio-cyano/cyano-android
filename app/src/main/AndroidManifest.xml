@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.github.ont.cyanowallet">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
+
+    <application
+        android:name=".main.AppApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/logo"
+        android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:roundIcon="@drawable/logo"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".mine.SettingNetActivity" />
+        <activity android:name=".wallet.CreateWalletActivity" />
+        <activity android:name=".main.MainFrameActivity" />
+        <activity android:name=".dapp.GameWebActivity" />
+        <activity android:name=".wallet.ImportWalletActivity" />
+        <activity android:name=".wallet.SendWalletActivity" />
+        <activity android:name=".wallet.WebActivity" />
+        <activity android:name=".scan.activity.CaptureActivity" />
+        <activity android:name=".scan.activity.CaremaPermissionActivity" />
+        <activity android:name=".scan.activity.ScanWalletLoginActivity" />
+        <activity android:name=".scan.activity.ScanWalletInvokeActivity" />
+        <activity android:name=".wallet.ExportWalletActivity" />
+        <activity android:name=".wallet.ReceiverWalletActivity" />
+        <activity android:name=".ontid.CreateOntIdActivity" />
+        <activity android:name=".ontid.ImportOntIdActivity" />
+        <activity android:name=".game.PrivateGameActivity" />
+        <activity android:name=".wallet.Oep4TransferActivity" />
+        <activity android:name=".ontid.DDOActivity" />
+        <activity android:name=".ontid.ReceiverOntIdActivity" />
+        <activity android:name=".ontid.DDOAttriActivity" />
+        <activity android:name=".ontid.OntIdWebActivity" />
+        <activity android:name="com.github.ont.connector.ontid.CreateOntIdActivity" />
+        <activity android:name="com.github.ont.connector.ontid.ImportOntIdActivity" />
+        <activity android:name="com.github.ont.connector.ontid.OntIdWebActivity" />
+        <activity android:name=".wallet.WalletManageActivity" />
+        <activity android:name="com.github.ont.connector.ontid.TestFrameActivity" />
+        <activity android:name="com.github.ont.connector.ontid.ExportOntIdActivity" />
+        <activity android:name=".wallet.WalletDetailActivity" />
+
+    </application>
+
+</manifest>

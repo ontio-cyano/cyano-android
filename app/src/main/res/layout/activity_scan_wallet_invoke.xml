@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ /***************************************************************************************
+  ~ * Copyright © 2014-2018 Ontology Foundation Ltd.
+  ~ * All rights reserved.
+  ~ *
+  ~ * This software is supplied only under the terms of a license agreement,
+  ~ * nondisclosure agreement or other written agreement with Ontology Foundation Ltd.
+  ~ * Use, redistribution or other disclosure of any parts of this
+  ~ * software is prohibited except in accordance with the terms of such written
+  ~ * agreement with Ontology Foundation Ltd. This software is confidential
+  ~ * and proprietary information of Ontology Foundation Ltd.
+  ~ *
+  ~ ****************************************************************************************/
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/layout_back"
+        android:layout_width="56dp"
+        android:layout_height="56dp">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/back" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:background="@drawable/icon_scan_qr" />
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="15dp"
+                android:gravity="center"
+                android:text="Trans"
+                android:textColor="@color/colorBlack"
+                android:textSize="17sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:text="Trans"
+                android:textColor="@color/colorBlack" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="15dp"
+                android:drawableLeft="@drawable/div_small_anchor"
+                android:drawablePadding="5dp"
+                android:text="Trans"
+                android:textColor="@color/colorBlack" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="2dp"
+                android:drawableLeft="@drawable/div_small_anchor"
+                android:drawablePadding="5dp"
+                android:text="Trans"
+                android:textColor="@color/colorBlack" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="18dp"
+                android:gravity="center"
+                android:text="pay by"
+                android:textAllCaps="true"
+                android:textColor="@color/colorBlack"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="24dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/img_anchor"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/anchor_down" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/from_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:textColor="@color/colorBlack"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="24dp"
+                android:background="@color/grey_E9EDEF" />
+        </LinearLayout>
+
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/confirm"
+        style="@style/arc_button"
+        android:text="confirm" />
+</LinearLayout>
