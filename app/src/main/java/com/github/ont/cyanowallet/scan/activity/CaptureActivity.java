@@ -261,8 +261,9 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
             solveData(json);
         }
     }
+
     ScanGetQRReq scanGetQRReq;
-    
+
     private void solveData(String json) {
         try {
             final JSONObject jsonObject = new JSONObject(json);
@@ -286,15 +287,27 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                     public void onSDKSuccess(String tag, Object message) {
                         dismissLoading();
                         String address = (String) message;
-                        Account account = SettingSingleton.getInstance().getWallet().getAccount(address);
-                        if (account == null) {
-                            showAttention("NO Wallet");
+                        if (TextUtils.isEmpty(address)) {
+                            if (TextUtils.isEmpty(SPWrapper.getDefaultAddress())) {
+                                showAttention("NO Wallet");
+                            } else {
+                                Intent intent = new Intent(CaptureActivity.this, ScanWalletInvokeActivity.class);
+                                intent.putExtra(Constant.KEY, params.toString());
+                                intent.putExtra(Constant.ADDRESS, SPWrapper.getDefaultAddress());
+                                startActivity(intent);
+                                finish();
+                            }
                         } else {
-                            Intent intent = new Intent(CaptureActivity.this, ScanWalletInvokeActivity.class);
-                            intent.putExtra(Constant.KEY, params.toString());
-                            intent.putExtra(Constant.ADDRESS, address);
-                            startActivity(intent);
-                            finish();
+                            Account account = SettingSingleton.getInstance().getWallet().getAccount(address);
+                            if (account == null) {
+                                showAttention("NO Wallet");
+                            } else {
+                                Intent intent = new Intent(CaptureActivity.this, ScanWalletInvokeActivity.class);
+                                intent.putExtra(Constant.KEY, params.toString());
+                                intent.putExtra(Constant.ADDRESS, address);
+                                startActivity(intent);
+                                finish();
+                            }
                         }
                     }
 
