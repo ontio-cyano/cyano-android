@@ -600,7 +600,7 @@ public class SDKWrapper {
                         Transaction[] transactions = instance.makeTransactionByJson(s);
                         Transaction transaction = transactions[0];
                         if (transaction.payer.equals(new Address())) {
-                            transaction.payer.equals(Address.decodeBase58(SPWrapper.getDefaultAddress()));
+                            transaction.payer=Address.decodeBase58(SPWrapper.getDefaultAddress());
                         }
                         Account account = instance.getWalletMgr().getWallet().getAccount(address);
                         com.github.ontio.account.Account account1 = OntSdk.getInstance().getWalletMgr().getAccount(account.address, password, account.getSalt());
