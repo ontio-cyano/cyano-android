@@ -9,6 +9,7 @@ import com.github.ont.cyanowallet.network.net.BaseRequest;
 import com.github.ont.cyanowallet.network.net.Result;
 import com.github.ont.cyanowallet.request.ScanGetTransactionReq;
 import com.github.ontio.OntSdk;
+import com.github.ontio.common.Address;
 import com.github.ontio.common.Helper;
 import com.github.ontio.core.DataSignature;
 import com.github.ontio.core.ontid.Attribute;
@@ -482,6 +483,11 @@ public class SDKWrapper {
                         Transaction transaction = transactions[0];
 //                        Transaction transaction = Transaction.deserializeFrom(Helper.hexToBytes(s));
 //                        boolean b = ontSdk.verifyTransaction(transaction);
+                        if (transaction.payer.equals(new Address())) {
+                            emitter.onNext("");
+                            emitter.onComplete();
+                            return;
+                        }
                         emitter.onNext(transaction.payer.toBase58());
                         emitter.onComplete();
                     }
@@ -593,7 +599,9 @@ public class SDKWrapper {
                         OntSdk instance = OntSdk.getInstance();
                         Transaction[] transactions = instance.makeTransactionByJson(s);
                         Transaction transaction = transactions[0];
-//                Transaction transaction = instance.getConnect().getTransaction(data);
+                        if (transaction.payer.equals(new Address())) {
+                            transaction.payer.equals(Address.decodeBase58(SPWrapper.getDefaultAddress()));
+                        }
                         Account account = instance.getWalletMgr().getWallet().getAccount(address);
                         com.github.ontio.account.Account account1 = OntSdk.getInstance().getWalletMgr().getAccount(account.address, password, account.getSalt());
                         instance.signTx(transaction, new com.github.ontio.account.Account[][]{{account1}});
