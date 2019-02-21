@@ -53,9 +53,9 @@ public class SendWalletActivity extends BaseActivity implements View.OnClickList
         if (getIntent() != null && getIntent().getExtras() != null) {
             type = getIntent().getExtras().getString(Constant.KEY);
         }
-        if (TextUtils.equals(type, Constant.ONT)) {
+        if (!TextUtils.equals(type, Constant.ONT)) {
             etAmount.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-            setPoint(etAmount);
+            CommonUtil.setPoint(etAmount, DECIMAL_DIGITS);
         } else {
             etAmount.setInputType(InputType.TYPE_CLASS_NUMBER);
         }
@@ -87,10 +87,10 @@ public class SendWalletActivity extends BaseActivity implements View.OnClickList
                 finish();
                 break;
             case R.id.btn_type:
-                if (TextUtils.equals(btnType.getText(), Constant.ONT)) {
+                if (!TextUtils.equals(btnType.getText(), Constant.ONT)) {
                     btnType.setText(Constant.ONG);
                     etAmount.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-                    setPoint(etAmount);
+                    CommonUtil.setPoint(etAmount, DECIMAL_DIGITS);
                 } else {
                     btnType.setText(Constant.ONT);
                     etAmount.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -103,40 +103,6 @@ public class SendWalletActivity extends BaseActivity implements View.OnClickList
     //小数的位数
     private static final int DECIMAL_DIGITS = 9;
 
-    public static void setPoint(final EditText editText) {
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().contains(".")) {
-                    if (s.length() - 1 - s.toString().indexOf(".") > DECIMAL_DIGITS) {
-                        s = s.toString().subSequence(0, s.toString().indexOf(".") + DECIMAL_DIGITS + 1);
-                        editText.setText(s);
-                        editText.setSelection(s.length());
-                    }
-                }
-                if (s.toString().trim().substring(0).equals(".")) {
-                    s = "0" + s;
-                    editText.setText(s);
-                    editText.setSelection(2);
-                }
-                if (s.toString().startsWith("0") && s.toString().trim().length() > 1) {
-                    if (!s.toString().substring(1, 2).equals(".")) {
-                        editText.setText(s.subSequence(0, 1));
-                        editText.setSelection(1);
-                        return;
-                    }
-                }
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-    }
 
     //显示付款
     private void showDialog(final String address, final String amount, final String type) {
