@@ -374,17 +374,21 @@ public class GameWebActivity extends BaseActivity implements View.OnClickListene
     }
 
     private void handleInvokeRead(final String data) {
+        final com.alibaba.fastjson.JSONObject jsonObject = JSON.parseObject(data);
+        if (TextUtils.isEmpty(SPWrapper.getDefaultAddress())) {
+            ToastUtil.showToast(this, "No wallet");
+            mWebView.sendFailToWeb(jsonObject.getString("action"), com.github.ont.cyano.Constant.PARAMS_ERROR, jsonObject.getString("version"), jsonObject.getString("id"), "No wallet");
+            return;
+        }
         SDKWrapper.handleInvokeRead(new SDKCallback() {
             @Override
             public void onSDKSuccess(String tag, Object message) {
-                com.alibaba.fastjson.JSONObject jsonObject = JSON.parseObject(data);
                 mWebView.sendSuccessToWeb(jsonObject.getString("action"), jsonObject.getString("version"), jsonObject.getString("id"), message);
             }
 
             @Override
             public void onSDKFail(String tag, String message) {
                 showAttention(message);
-                com.alibaba.fastjson.JSONObject jsonObject = JSON.parseObject(data);
                 mWebView.sendFailToWeb(jsonObject.getString("action"), com.github.ont.cyano.Constant.PARAMS_ERROR, jsonObject.getString("version"), jsonObject.getString("id"), message);
             }
         }, TAG, data);
@@ -399,6 +403,13 @@ public class GameWebActivity extends BaseActivity implements View.OnClickListene
     private void handleInvokeTransaction(final String data, String password) {
         final com.alibaba.fastjson.JSONObject jsonObject = JSON.parseObject(data);
         final String action = jsonObject.getString("action");
+
+        if (TextUtils.isEmpty(SPWrapper.getDefaultAddress())) {
+            ToastUtil.showToast(this, "no wallet");
+            mWebView.sendFailToWeb(action, com.github.ont.cyano.Constant.INTERNAL_ERROR, jsonObject.getString("version"), jsonObject.getString("id"), "no wallet");
+            return;
+        }
+
         showLoading();
         SDKWrapper.getSendAddress(new SDKCallback() {
             @Override

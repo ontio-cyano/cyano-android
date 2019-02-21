@@ -279,6 +279,9 @@ public class SDKWrapper {
                 OntSdk ontSdk = OntSdk.getInstance();
                 Transaction[] transactions = ontSdk.makeTransactionByJson(data);
                 Transaction transaction = transactions[0];
+                if (transaction.payer.equals(new Address())) {
+                    transaction.payer = Address.decodeBase58(address);
+                }
                 Account account = ontSdk.getWalletMgr().getWallet().getAccount(address);
                 com.github.ontio.account.Account account1 = OntSdk.getInstance().getWalletMgr().getAccount(account.address, password, account.getSalt());
                 ontSdk.signTx(transaction, new com.github.ontio.account.Account[][]{{account1}});
@@ -600,7 +603,7 @@ public class SDKWrapper {
                         Transaction[] transactions = instance.makeTransactionByJson(s);
                         Transaction transaction = transactions[0];
                         if (transaction.payer.equals(new Address())) {
-                            transaction.payer=Address.decodeBase58(SPWrapper.getDefaultAddress());
+                            transaction.payer = Address.decodeBase58(SPWrapper.getDefaultAddress());
                         }
                         Account account = instance.getWalletMgr().getWallet().getAccount(address);
                         com.github.ontio.account.Account account1 = OntSdk.getInstance().getWalletMgr().getAccount(account.address, password, account.getSalt());
@@ -775,6 +778,9 @@ public class SDKWrapper {
 //                ontSdk.signTx(transaction, new com.github.ontio.account.Account[][]{{account1}});
 //                ontSdk.setRestful("http://139.219.136.147:20334");
 //                ontSdk.setDefaultConnect(ontSdk.getRestful());
+                if (transaction.payer.equals(new Address())){
+                    transaction.payer=Address.decodeBase58(SPWrapper.getDefaultAddress());
+                }
                 Object o = ontSdk.getConnect().sendRawTransactionPreExec(transaction.toHexString());
                 emitter.onNext(o);
                 emitter.onComplete();
