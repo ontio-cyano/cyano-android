@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.ont.cyanowallet.R;
 import com.github.ont.cyanowallet.base.BaseActivity;
@@ -85,9 +86,15 @@ public class ScanWalletLoginActivity extends BaseActivity implements View.OnClic
         }
         switch (type) {
             case "ontid":
+                if (TextUtils.isEmpty(com.github.ont.connector.utils.SPWrapper.getDefaultOntId())){
+                    showAttention("NO ONT ID,please register");
+                }
                 address = com.github.ont.connector.utils.SPWrapper.getDefaultOntId();
                 break;
             default:
+                if (TextUtils.isEmpty(SPWrapper.getDefaultAddress())){
+                    showAttention("NO Address,please register");
+                }
                 address = SPWrapper.getDefaultAddress();
         }
         if (TextUtils.isEmpty(address)) {
@@ -103,24 +110,22 @@ public class ScanWalletLoginActivity extends BaseActivity implements View.OnClic
         if (getIntent() != null && getIntent().getExtras() != null) {
             Bundle bundle = getIntent().getExtras();
             String data = bundle.getString(Constant.KEY, "");
-//                "type": "ontid", // or account
-//                    "method": "post",
-//                    "dapp":"ontdappinfo",
-//                    "message": "HgigFdfwf",
-//                    "url": "http://127.0.0.1:80/login/callback"
+//            "type": "ontid or account",
+//                    "dappName": "dapp Name",
+//                    "dappIcon": "dapp Icon",
+//                    "message": "helloworld",
+//                    "expire": 1546415363,
+//                    "callback": "http://127.0.0.1:80/login/callback"
+
+            version = bundle.getString(Constant.VERSION, "");
+            id = bundle.getString(Constant.ID, "");
             try {
                 JSONObject jsonObject = new JSONObject(data);
                 message = jsonObject.getString("message");
                 url = jsonObject.getString("callback");
                 type = jsonObject.getString("type");
-                String method = jsonObject.getString("method");
-                String dapp = jsonObject.getString("dapp");
-                version = jsonObject.getString("version");
-                id = jsonObject.getString("id");
             } catch (JSONException e) {
                 e.printStackTrace();
-                ToastUtil.showToast(this, "QR error");
-                finish();
             }
         }
 //        List<Account> accounts = SettingSingleton.getInstance().getAccounts();

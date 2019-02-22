@@ -273,6 +273,12 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                 if (!TextUtils.isEmpty(defaultAddress)) {
                     Intent intent = new Intent(this, ScanWalletLoginActivity.class);
                     intent.putExtra(Constant.KEY, jsonObject.getJSONObject("params").toString());
+                    try {
+                        intent.putExtra(Constant.ID, jsonObject.getString(Constant.ID));
+                        intent.putExtra(Constant.VERSION, jsonObject.getString(Constant.VERSION));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     startActivity(intent);
                     finish();
                 } else {
@@ -294,6 +300,12 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                                 Intent intent = new Intent(CaptureActivity.this, ScanWalletInvokeActivity.class);
                                 intent.putExtra(Constant.KEY, params.toString());
                                 intent.putExtra(Constant.ADDRESS, SPWrapper.getDefaultAddress());
+                                try {
+                                    intent.putExtra(Constant.ID, jsonObject.getString(Constant.ID));
+                                    intent.putExtra(Constant.VERSION, jsonObject.getString(Constant.VERSION));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                                 startActivity(intent);
                                 finish();
                             }
@@ -305,6 +317,12 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                                 Intent intent = new Intent(CaptureActivity.this, ScanWalletInvokeActivity.class);
                                 intent.putExtra(Constant.KEY, params.toString());
                                 intent.putExtra(Constant.ADDRESS, address);
+                                try {
+                                    intent.putExtra(Constant.ID, jsonObject.getString(Constant.ID));
+                                    intent.putExtra(Constant.VERSION, jsonObject.getString(Constant.VERSION));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                                 startActivity(intent);
                                 finish();
                             }

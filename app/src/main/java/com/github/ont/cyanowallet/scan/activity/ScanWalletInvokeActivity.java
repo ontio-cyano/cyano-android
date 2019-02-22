@@ -77,14 +77,15 @@ public class ScanWalletInvokeActivity extends BaseActivity implements View.OnCli
 //            "login": true,
 //                    "qrcodeUrl": "http://101.132.193.149:4027/qrcode/AUr5QUfeBADq6BMY6Tp5yuMsUNGpsD7nLZ",
 //                    "message": "will pay 1 ONT in this transaction",
+//                    "callback": "http://101.132.193.149:4027/invoke/callback",
             address = bundle.getString(Constant.ADDRESS, "");
+            id = bundle.getString(Constant.ID, "");
+            version = bundle.getString(Constant.VERSION, "");
             fromAddress.setText(address);
             try {
                 JSONObject jsonObject = new JSONObject(data);
                 qrcodeUrl = jsonObject.getString("qrcodeUrl");
                 callback = jsonObject.getString("callback");
-                id = jsonObject.getString("id");
-                version = jsonObject.getString("version");
             } catch (JSONException e) {
                 e.printStackTrace();
             }

@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import com.github.ont.cyano.Constant;
 import com.github.ontio.OntSdk;
 import com.github.ontio.common.Common;
+import com.github.ontio.sdk.manager.WalletMgr;
 import com.github.ontio.sdk.wallet.Identity;
 import com.github.ontio.sdk.wallet.Wallet;
 
@@ -27,17 +28,14 @@ public class SPWrapper {
     }
 
     public static String getDefaultOntId() {
-        Wallet wallet = OntSdk.getInstance().getWalletMgr().getWallet();
-        if (wallet == null) {
-            try {
-                OntSdk.getInstance().openWalletFile(getSharedPreferences());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        WalletMgr walletMgr = OntSdk.getInstance().getWalletMgr();
+        if (walletMgr == null) {
+            SDKWrapper.initOntSDK(SPWrapper.getDefaultNet(), getSharedPreferences());
         }
+        Wallet wallet = OntSdk.getInstance().getWalletMgr().getWallet();
         String ontid = String.format("%s%s", Common.didont, wallet.getDefaultAccountAddress());
         Identity identity = wallet.getIdentity(ontid);
-        if (identity==null){
+        if (identity == null) {
             return "";
         }
         return identity.ontid;
@@ -45,14 +43,11 @@ public class SPWrapper {
     }
 
     public static void setDefaultOntId(String address) {
-        Wallet wallet = OntSdk.getInstance().getWalletMgr().getWallet();
-        if (wallet == null) {
-            try {
-                OntSdk.getInstance().openWalletFile(getSharedPreferences());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        WalletMgr walletMgr = OntSdk.getInstance().getWalletMgr();
+        if (walletMgr == null) {
+            SDKWrapper.initOntSDK(SPWrapper.getDefaultNet(), getSharedPreferences());
         }
+        Wallet wallet = OntSdk.getInstance().getWalletMgr().getWallet();
         wallet.setDefaultIdentity(address);
         try {
             OntSdk.getInstance().getWalletMgr().writeWallet();

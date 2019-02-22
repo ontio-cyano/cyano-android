@@ -24,10 +24,11 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -59,6 +60,21 @@
         <activity android:name="com.github.ont.connector.ontid.TestFrameActivity" />
         <activity android:name="com.github.ont.connector.ontid.ExportOntIdActivity" />
         <activity android:name=".wallet.WalletDetailActivity" />
+        <activity
+            android:name=".wake.WakeInvokeActivity"
+            android:launchMode="singleTop">
+            <!--注册scheme-->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <!--BROWSABLE指定该Activity能被浏览器安全调用-->
+                <!--<category android:name="android.intent.category.BROWSABLE"/>-->
+                <!--声明自定义scheme，类似于http, https-->
+                <data
+                    android:host="com.github.cyano"
+                    android:scheme="cyano" />
+            </intent-filter>
+        </activity>
 
     </application>
 

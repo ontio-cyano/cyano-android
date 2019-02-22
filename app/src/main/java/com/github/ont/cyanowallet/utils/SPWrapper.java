@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.github.ont.cyanowallet.main.AppApplication;
 import com.github.ontio.OntSdk;
+import com.github.ontio.sdk.manager.WalletMgr;
 import com.github.ontio.sdk.wallet.Wallet;
 
 import org.json.JSONArray;
@@ -19,27 +20,21 @@ public class SPWrapper {
     }
 
     public static String getDefaultAddress() {
-        Wallet wallet = OntSdk.getInstance().getWalletMgr().getWallet();
-        if (wallet == null) {
-            try {
-                OntSdk.getInstance().openWalletFile(getSharedPreferences());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        WalletMgr walletMgr = OntSdk.getInstance().getWalletMgr();
+        if (walletMgr == null) {
+            SDKWrapper.initOntSDK(null, "", SPWrapper.getDefaultNet(), getSharedPreferences());
         }
+        Wallet wallet = OntSdk.getInstance().getWalletMgr().getWallet();
         return wallet.getDefaultAccountAddress();
 //        return getSharedPreferences().getString(Constant.DEFAULT_ADDRESS, "");
     }
 
     public static void setDefaultAddress(String address) {
-        Wallet wallet = OntSdk.getInstance().getWalletMgr().getWallet();
-        if (wallet == null) {
-            try {
-                OntSdk.getInstance().openWalletFile(getSharedPreferences());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        WalletMgr walletMgr = OntSdk.getInstance().getWalletMgr();
+        if (walletMgr == null) {
+            SDKWrapper.initOntSDK(null, "", SPWrapper.getDefaultNet(), getSharedPreferences());
         }
+        Wallet wallet = OntSdk.getInstance().getWalletMgr().getWallet();
         wallet.setDefaultAccount(address);
         try {
             OntSdk.getInstance().getWalletMgr().writeWallet();

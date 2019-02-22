@@ -16,6 +16,7 @@ import com.github.ontio.core.ontid.Attribute;
 import com.github.ontio.core.transaction.Transaction;
 import com.github.ontio.crypto.MnemonicCode;
 import com.github.ontio.crypto.SignatureScheme;
+import com.github.ontio.sdk.exception.SDKException;
 import com.github.ontio.sdk.wallet.Account;
 import com.github.ontio.sdk.wallet.Identity;
 import com.github.ontio.smartcontract.nativevm.Ong;
@@ -24,6 +25,7 @@ import com.github.ontio.smartcontract.neovm.Oep4;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import io.reactivex.Observable;
@@ -44,40 +46,15 @@ public class SDKWrapper {
 
 
     public static void initOntSDK(final SDKCallback callback, final String tag, final String restUrl, final SharedPreferences path) {
-
-        Observable.create(new ObservableOnSubscribe<Boolean>() {
-
-            @Override
-            public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
-                ontSdk.setRestful(restUrl);
-                ontSdk.setDefaultConnect(ontSdk.getRestful());
-                ontSdk.openWalletFile(path);
-                emitter.onNext(true);
-                emitter.onComplete();
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Boolean>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                callback.onSDKSuccess(tag, aBoolean);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (e.getMessage() == null) {
-                    callback.onSDKFail(tag, "");
-                } else {
-                    callback.onSDKFail(tag, e.getMessage());
-                }
-            }
-
-            @Override
-            public void onComplete() {
-            }
-        });
+        try {
+            ontSdk.setRestful(restUrl);
+            ontSdk.setDefaultConnect(ontSdk.getRestful());
+            ontSdk.openWalletFile(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SDKException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void createIdentity(final SDKCallback callback, final String tag, final String password, final String walletPwd) {
@@ -778,8 +755,8 @@ public class SDKWrapper {
 //                ontSdk.signTx(transaction, new com.github.ontio.account.Account[][]{{account1}});
 //                ontSdk.setRestful("http://139.219.136.147:20334");
 //                ontSdk.setDefaultConnect(ontSdk.getRestful());
-                if (transaction.payer.equals(new Address())){
-                    transaction.payer=Address.decodeBase58(SPWrapper.getDefaultAddress());
+                if (transaction.payer.equals(new Address())) {
+                    transaction.payer = Address.decodeBase58(SPWrapper.getDefaultAddress());
                 }
                 Object o = ontSdk.getConnect().sendRawTransactionPreExec(transaction.toHexString());
                 emitter.onNext(o);
