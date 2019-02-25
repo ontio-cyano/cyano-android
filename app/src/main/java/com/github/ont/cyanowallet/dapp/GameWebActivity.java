@@ -37,10 +37,7 @@ import android.widget.ProgressBar;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
 import com.github.ont.connector.base.CyanoBaseActivity;
-import com.github.ont.connector.ontid.CreateOntIdActivity;
-import com.github.ont.connector.ontid.OntIdWebActivity;
 import com.github.ont.connector.update.ImageUtil;
 import com.github.ont.connector.update.NetUtil;
 import com.github.ont.cyano.CyanoWebView;
@@ -53,6 +50,7 @@ import com.github.ont.cyanowallet.utils.SDKWrapper;
 import com.github.ont.cyanowallet.utils.SPWrapper;
 import com.github.ont.cyanowallet.utils.ToastUtil;
 import com.github.ontio.OntSdk;
+import com.github.ontio.common.Address;
 import com.github.ontio.core.transaction.Transaction;
 import com.github.ontio.sdk.manager.WalletMgr;
 import com.github.ontio.sdk.wallet.Wallet;
@@ -325,11 +323,14 @@ public class GameWebActivity extends BaseActivity implements View.OnClickListene
         Transaction transaction = transactions[0];
         try {
             if (TextUtils.equals(tag, Constant.INVOKE)) {
+                if (transaction.payer.equals(new Address())) {
+                    return true;
+                }
                 return TextUtils.equals(transaction.payer.toBase58(), SPWrapper.getDefaultAddress());
             } else {
                 return true;
             }
-        } catch (NoSuchAlgorithmException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
