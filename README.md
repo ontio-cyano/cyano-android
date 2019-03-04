@@ -12,9 +12,10 @@ Cyano download: http://101.132.193.149/files/app-debug.apk
 
 ## App wakeup Cyano
 
+* login
+* invoke smartcontract
 
-
-#### Login
+### Login
 
 Request data the same to [Cyano scan qrcode Login](https://github.com/ontio-cyano/CEPs/blob/master/CEPS/CEP1.mediawiki#Login-2)
 
@@ -64,7 +65,7 @@ Request data the same to [Cyano scan qrcode Login](https://github.com/ontio-cyan
     startActivity(intent);
 ```
 
-#### Incoke smartcontract
+### Incoke smartcontract
 
 Request data the same to [Cyano scan qrcode Invoke](https://github.com/ontio-cyano/CEPs/blob/master/CEPS/CEP1.mediawiki#Invoke_a_Smart_Contract-2)
 ```
