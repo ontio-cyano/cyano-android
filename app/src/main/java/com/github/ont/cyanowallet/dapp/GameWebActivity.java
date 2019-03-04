@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.JsPromptResult;
@@ -416,6 +417,7 @@ public class GameWebActivity extends BaseActivity implements View.OnClickListene
             @Override
             public void onSDKSuccess(String tag, Object message) {
                 dismissLoading();
+                Log.i(TAG, "onSDKSuccess: "+message);
                 ArrayList<String> result = (ArrayList<String>) message;
 
                 if (result != null && result.size() > 1) {

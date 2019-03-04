@@ -3,6 +3,7 @@ package com.github.ont.cyanowallet.utils;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.github.ont.cyanowallet.network.net.BaseRequest;
@@ -399,6 +400,7 @@ public class SDKWrapper {
             public void subscribe(ObservableEmitter<String> emitter) throws Exception {
                 Transaction transaction = Transaction.deserializeFrom(Helper.hexToBytes(data));
                 boolean b = OntSdk.getInstance().getConnect().sendRawTransaction(transaction);
+                Log.i(TAG, "subscribe: "+transaction.hash().toString());
 //                Object smartCodeEvent = OntSdk.getInstance().getConnect().getSmartCodeEvent(transaction.hash().toString());
                 if (b) {
                     emitter.onNext(transaction.hash().toString());
