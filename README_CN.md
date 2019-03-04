@@ -1,16 +1,21 @@
 
-Cyano下载地址为
-```
-http://101.132.193.149/files/app-debug.apk
-```
+# Cyano 钱包
 
-# App唤醒Cyano App
+Cyano 钱包集成了dApi功能：
+
+* 支持钱包内打开DAPP
+* 支持扫描
+* APP唤醒钱包
+
+钱包APK下载地址为 http://101.132.193.149/files/app-debug.apk
+
+## App 唤醒 Cyano App
 
 此文档为原生DApp唤醒Cyano App的流程设计和接口定义。
 
-## 流程设计
+### 流程设计
 
-### 登录
+#### 登录
 
 数据内容仿造[Cyano二维码 Login](https://github.com/ontio-cyano/CEPs/blob/master/CEPS/CEP1.mediawiki#Login-2)
 ```
@@ -59,7 +64,7 @@ http://101.132.193.149/files/app-debug.apk
     startActivity(intent);
 ```
 
-### 交易
+#### 调用合约
 
 数据内容仿造[Cyano二维码 Invoke](https://github.com/ontio-cyano/CEPs/blob/master/CEPS/CEP1.mediawiki#Invoke_a_Smart_Contract-2)
 ```
