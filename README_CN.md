@@ -5,7 +5,7 @@ Cyano 钱包集成了dApi功能：
 
 * 支持钱包内打开DAPP
 * 支持扫描
-* APP唤醒钱包
+* 支持APP唤醒钱包
 
 钱包APK下载地址为 http://101.132.193.149/files/app-debug.apk
 
