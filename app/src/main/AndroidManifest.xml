@@ -71,8 +71,8 @@
                 <!--<category android:name="android.intent.category.BROWSABLE"/>-->
                 <!--声明自定义scheme，类似于http, https-->
                 <data
-                    android:host="com.github.cyano"
-                    android:scheme="cyano" />
+                    android:host="com.github.ont"
+                    android:scheme="ont" />
             </intent-filter>
         </activity>
 
