@@ -62,7 +62,7 @@ Request data the same to [Cyano scan qrcode Login](https://github.com/ontio-cyan
 
 
     Intent intent = new Intent("android.intent.action.VIEW");
-    intent.setData(Uri.parse("cyano://com.github.cyano?data=" + data ));
+    intent.setData(Uri.parse("ont://com.github.ont?data=" + data ));
     intent.addCategory("android.intent.category.DEFAULT");
     startActivity(intent);
 ```
@@ -90,7 +90,7 @@ Request data the same to [Cyano scan qrcode Invoke](https://github.com/ontio-cya
 
 
     Intent intent = new Intent("android.intent.action.VIEW");
-    intent.setData(Uri.parse("cyano://com.github.cyano?data=" + data ));
+    intent.setData(Uri.parse("ont://com.github.ont?data=" + data ));
     intent.addCategory("android.intent.category.DEFAULT");
     startActivity(intent);
 ```
@@ -109,8 +109,8 @@ If your wallet also wants to support wake-up, follow the following procedure:
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data
-                    android:host="com.github.cyano"
-                    android:scheme="cyano" />
+                    android:host="com.github.ont"
+                    android:scheme="ont" />
             </intent-filter>
    </activity>
 ```

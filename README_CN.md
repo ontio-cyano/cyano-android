@@ -61,7 +61,7 @@ Cyano 钱包集成了dApi功能：
 
 
     Intent intent = new Intent("android.intent.action.VIEW");
-    intent.setData(Uri.parse("cyano://com.github.cyano?data=" + data ));
+    intent.setData(Uri.parse("ont://com.github.ont?data=" + data ));
     intent.addCategory("android.intent.category.DEFAULT");
     startActivity(intent);
 ```
@@ -90,7 +90,7 @@ Cyano 钱包集成了dApi功能：
 
 
     Intent intent = new Intent("android.intent.action.VIEW");
-    intent.setData(Uri.parse("cyano://com.github.cyano?data=" + data ));
+    intent.setData(Uri.parse("ont://com.github.ont?data=" + data ));
     intent.addCategory("android.intent.category.DEFAULT");
     startActivity(intent);
 ```
@@ -111,8 +111,8 @@ Cyano 钱包集成了dApi功能：
                 <!--<category android:name="android.intent.category.BROWSABLE"/>-->
                 <!--声明自定义scheme，类似于http, https-->
                 <data
-                    android:host="com.github.cyano"
-                    android:scheme="cyano" />
+                    android:host="com.github.ont"
+                    android:scheme="ont" />
             </intent-filter>
    </activity>
 ```
