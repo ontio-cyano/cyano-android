@@ -15,6 +15,8 @@ Cyano download: http://101.132.193.149/files/app-debug.apk
 * login
 * invoke smartcontract
 
+## [Use of other wallets](#Use_of_other_wallets)
+
 ### Login
 
 Request data the same to [Cyano scan qrcode Login](https://github.com/ontio-cyano/CEPs/blob/master/CEPS/CEP1.mediawiki#Login-2)
@@ -93,3 +95,24 @@ Request data the same to [Cyano scan qrcode Invoke](https://github.com/ontio-cya
     startActivity(intent);
 ```
 
+
+
+### Use_of_other_wallets
+If your wallet also wants to support wake-up, follow the following procedure:
+
++ Registration Receive Activity
+```text
+  <activity
+            android:name=".wake.WakeInvokeActivity"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="com.github.cyano"
+                    android:scheme="cyano" />
+            </intent-filter>
+   </activity>
+```
+
++ intent to different activity according to action，[Reference resources](https://github.com/ontio-cyano/cyano-android/blob/master/app/src/main/java/com/github/ont/cyanowallet/wake/WakeInvokeActivity.java)

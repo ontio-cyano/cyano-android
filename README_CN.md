@@ -13,6 +13,8 @@ Cyano 钱包集成了dApi功能：
 
 此文档为原生DApp唤醒Cyano App的流程设计和接口定义。
 
+## [其他钱包使用](#其他钱包使用)
+
 ### 流程设计
 
 #### 登录
@@ -93,7 +95,7 @@ Cyano 钱包集成了dApi功能：
     startActivity(intent);
 ```
 
-### 钱包对接
+### 其他钱包使用
 如果你的钱包也想支持唤醒功能，可以按照以下流程:
 
 + 注册接收页面
@@ -115,4 +117,4 @@ Cyano 钱包集成了dApi功能：
    </activity>
 ```
 
-+ 根据action跳转到不同页面，[参考](app\src\main\java\com\github\ont\cyanowallet\wake\WakeInvokeActivity.java)
++ 根据action跳转到不同页面，[参考](https://github.com/ontio-cyano/cyano-android/blob/master/app/src/main/java/com/github/ont/cyanowallet/wake/WakeInvokeActivity.java)
