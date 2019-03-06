@@ -93,3 +93,26 @@ Cyano 钱包集成了dApi功能：
     startActivity(intent);
 ```
 
+### 钱包对接
+如果你的钱包也想支持唤醒功能，可以按照以下流程:
+
++ 注册接收页面
+```text
+  <activity
+            android:name=".wake.WakeInvokeActivity"
+            android:launchMode="singleTop">
+            <!--注册scheme-->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <!--BROWSABLE指定该Activity能被浏览器安全调用-->
+                <!--<category android:name="android.intent.category.BROWSABLE"/>-->
+                <!--声明自定义scheme，类似于http, https-->
+                <data
+                    android:host="com.github.cyano"
+                    android:scheme="cyano" />
+            </intent-filter>
+   </activity>
+```
+
++ 根据action跳转到不同页面，[参考](app\src\main\java\com\github\ont\cyanowallet\wake\WakeInvokeActivity.java)
