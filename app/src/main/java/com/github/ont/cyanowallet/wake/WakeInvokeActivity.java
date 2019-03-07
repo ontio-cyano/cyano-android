@@ -5,13 +5,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.View;
+import android.util.Base64;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.ont.cyanowallet.MainActivity;
 import com.github.ont.cyanowallet.R;
@@ -19,16 +16,8 @@ import com.github.ont.cyanowallet.base.BaseActivity;
 import com.github.ont.cyanowallet.scan.activity.ScanWalletInvokeActivity;
 import com.github.ont.cyanowallet.scan.activity.ScanWalletLoginActivity;
 import com.github.ont.cyanowallet.utils.Constant;
-import com.github.ont.cyanowallet.utils.SDKCallback;
-import com.github.ont.cyanowallet.utils.SDKWrapper;
 import com.github.ont.cyanowallet.utils.SPWrapper;
 import com.github.ont.cyanowallet.utils.ToastUtil;
-import com.github.ontio.OntSdk;
-import com.github.ontio.common.Address;
-import com.github.ontio.core.transaction.Transaction;
-
-import java.util.ArrayList;
-import java.util.Scanner;
 
 /**
  * @author zhugang
@@ -67,7 +56,7 @@ public class WakeInvokeActivity extends BaseActivity {
 //            Intent intent = new Intent("android.intent.action.VIEW");
 //            intent.setData(Uri.parse("cyano://com.github.cyano?data="+data));
 //            startActivity(intent);
-            final String data = uri.getQueryParameter("data");
+            final String data = Uri.decode(new String(Base64.decode(uri.getQueryParameter("param"), Base64.NO_WRAP)));
             if (TextUtils.isEmpty(data)) {
                 Toast.makeText(baseActivity, "params error", Toast.LENGTH_SHORT).show();
                 finish();
