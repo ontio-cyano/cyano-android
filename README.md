@@ -59,10 +59,9 @@ Request data the same to [Cyano scan qrcode Login](https://github.com/ontio-cyan
 ```
     String data = "{\"action\":\"login\",\"id\":\"10ba038e-48da-487b-96e8-8d3b99b6d18a\",\"version\":\"v1.0.0\",\"params\":{\"type\":\"ontid or account\",\"dappName\":\"dapp Name\",\"dappIcon\":\"dapp Icon\",\"message\":\"helloworld\",\"expire\":1546415363,\"callback\":\"http://127.0.0.1:80/login/callback\"}}";
 
-
-
+    String sendData = Base64.encodeToString(Uri.encode(data).getBytes(), Base64.NO_WRAP);
     Intent intent = new Intent("android.intent.action.VIEW");
-    intent.setData(Uri.parse("ontprovider://ont.io?param=" + data ));
+    intent.setData(Uri.parse("ontprovider://ont.io?param=" + sendData ));
     intent.addCategory("android.intent.category.DEFAULT");
     startActivity(intent);
 ```
@@ -88,9 +87,9 @@ Request data the same to [Cyano scan qrcode Invoke](https://github.com/ontio-cya
 ```
     String data="{\"action\":\"invoke\",\"version\":\"v1.0.0\",\"id\":\"10ba038e-48da-487b-96e8-8d3b99b6d18a\",\"params\":{\"login\":true,\"qrcodeUrl\":\"http://101.132.193.149:4027/qrcode/AUr5QUfeBADq6BMY6Tp5yuMsUNGpsD7nLZ\",\"message\":\"will pay 1 ONT in this transaction\",\"callback\":\"http://101.132.193.149:4027/invoke/callback\"}}";
 
-
+    String sendData = Base64.encodeToString(Uri.encode(data).getBytes(), Base64.NO_WRAP);
     Intent intent = new Intent("android.intent.action.VIEW");
-    intent.setData(Uri.parse("ontprovider://ont.io?param=" + data ));
+    intent.setData(Uri.parse("ontprovider://ont.io?param=" + sendData ));
     intent.addCategory("android.intent.category.DEFAULT");
     startActivity(intent);
 ```

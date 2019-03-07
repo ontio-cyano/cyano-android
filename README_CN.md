@@ -58,10 +58,9 @@ Cyano 钱包集成了dApi功能：
 ```
     String data = "{\"action\":\"login\",\"id\":\"10ba038e-48da-487b-96e8-8d3b99b6d18a\",\"version\":\"v1.0.0\",\"params\":{\"type\":\"ontid or account\",\"dappName\":\"dapp Name\",\"dappIcon\":\"dapp Icon\",\"message\":\"helloworld\",\"expire\":1546415363,\"callback\":\"http://127.0.0.1:80/login/callback\"}}";
 
-
-
+    String sendData = Base64.encodeToString(Uri.encode(data).getBytes(), Base64.NO_WRAP);
     Intent intent = new Intent("android.intent.action.VIEW");
-    intent.setData(Uri.parse("ont://com.github.ont?data=" + data ));
+    intent.setData(Uri.parse("ontprovider://ont.io?param=" + sendData ));
     intent.addCategory("android.intent.category.DEFAULT");
     startActivity(intent);
 ```
@@ -89,8 +88,9 @@ Cyano 钱包集成了dApi功能：
     String data="{\"action\":\"invoke\",\"version\":\"v1.0.0\",\"id\":\"10ba038e-48da-487b-96e8-8d3b99b6d18a\",\"params\":{\"login\":true,\"qrcodeUrl\":\"http://101.132.193.149:4027/qrcode/AUr5QUfeBADq6BMY6Tp5yuMsUNGpsD7nLZ\",\"message\":\"will pay 1 ONT in this transaction\",\"callback\":\"http://101.132.193.149:4027/invoke/callback\"}}";
 
 
+    String sendData = Base64.encodeToString(Uri.encode(data).getBytes(), Base64.NO_WRAP);
     Intent intent = new Intent("android.intent.action.VIEW");
-    intent.setData(Uri.parse("ont://com.github.ont?data=" + data ));
+    intent.setData(Uri.parse("ontprovider://ont.io?param=" + sendData ));
     intent.addCategory("android.intent.category.DEFAULT");
     startActivity(intent);
 ```
@@ -111,8 +111,8 @@ Cyano 钱包集成了dApi功能：
                 <!--<category android:name="android.intent.category.BROWSABLE"/>-->
                 <!--声明自定义scheme，类似于http, https-->
                 <data
-                    android:host="com.github.ont"
-                    android:scheme="ont" />
+                   android:host="ont.io"
+                   android:scheme="ontprovider" />
             </intent-filter>
    </activity>
 ```
