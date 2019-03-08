@@ -321,6 +321,9 @@ public class GameWebActivity extends BaseActivity implements View.OnClickListene
     private boolean checkData(String data, String tag) {
         OntSdk ontSdk = OntSdk.getInstance();
         Transaction[] transactions = ontSdk.makeTransactionByJson(data);
+        if (transactions == null) {
+            return false;
+        }
         Transaction transaction = transactions[0];
         try {
             if (TextUtils.equals(tag, Constant.INVOKE)) {
@@ -417,7 +420,7 @@ public class GameWebActivity extends BaseActivity implements View.OnClickListene
             @Override
             public void onSDKSuccess(String tag, Object message) {
                 dismissLoading();
-                Log.i(TAG, "onSDKSuccess: "+message);
+                Log.i(TAG, "onSDKSuccess: " + message);
                 ArrayList<String> result = (ArrayList<String>) message;
 
                 if (result != null && result.size() > 1) {
