@@ -61,7 +61,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:divider="@null"
-                android:scrollbars="none"/>
+                android:scrollbars="none" />
 
             <View
                 android:layout_width="match_parent"
@@ -86,11 +86,13 @@
                 android:layout_marginRight="20dp"
                 android:divider="@null"
                 android:scrollbars="none" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_marginTop="10dp"
                 android:background="@color/grey_6E6F70" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -102,16 +104,27 @@
                 android:textColor="@color/grey_6E6F70"
                 android:textSize="14sp" />
 
-
-            <EditText
-                android:id="@+id/et_net"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:layout_weight="1"
-                android:text="http://127.0.0.1"
-                android:textSize="16sp" />
+                android:gravity="center">
+
+                <EditText
+                    android:id="@+id/et_net"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:text="http://127.0.0.1"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/img_private"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/default_icon" />
+            </LinearLayout>
 
 
             <Button
@@ -121,9 +134,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="10dp"
-                android:text="Done"
-                android:layout_marginBottom="20dp"/>
-
+                android:layout_marginBottom="20dp"
+                android:text="Done" />
 
 
         </LinearLayout>

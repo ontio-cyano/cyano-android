@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -24,6 +25,9 @@ public class SettingNetActivity extends BaseActivity implements View.OnClickList
 
     private EditText etNet;
     private TextView tvShow;
+    private ImageView imgPrivate;
+    private NetSettingAdapter netSettingAdapter;
+    private NetSettingAdapter netSettingAdapter1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +46,13 @@ public class SettingNetActivity extends BaseActivity implements View.OnClickList
         btnCustom.setOnClickListener(this);
         ListView lv = (ListView) findViewById(R.id.listview);
         ListView lvTest = (ListView) findViewById(R.id.listview_test);
+        imgPrivate = findViewById(R.id.img_private);
 
         String[] mainNets = getResources().getStringArray(R.array.list);
         String[] testNets = getResources().getStringArray(R.array.list_test);
 
-        final NetSettingAdapter netSettingAdapter = new NetSettingAdapter(this, mainNets);
-        final NetSettingAdapter netSettingAdapter1 = new NetSettingAdapter(this, testNets);
+        netSettingAdapter = new NetSettingAdapter(this, mainNets);
+        netSettingAdapter1 = new NetSettingAdapter(this, testNets);
 
         lv.setAdapter(netSettingAdapter);
         lvTest.setAdapter(netSettingAdapter1);
@@ -56,31 +61,41 @@ public class SettingNetActivity extends BaseActivity implements View.OnClickList
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String result = adapterView.getItemAtPosition(i).toString();
-                setNet(result);
-                netSettingAdapter.notifyDataSetChanged();
-                netSettingAdapter1.notifyDataSetChanged();
+                setNet(result, false);
             }
         });
         lvTest.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String result = adapterView.getItemAtPosition(i).toString();
-                setNet(result);
-                netSettingAdapter.notifyDataSetChanged();
-                netSettingAdapter1.notifyDataSetChanged();
+                setNet(result, false);
             }
         });
+        for (String mainNet : mainNets) {
+            if (SPWrapper.getDefaultNet().contains(mainNet)) {
+                imgPrivate.setVisibility(View.GONE);
+                return;
+            }
+        }
+        for (String testNet : testNets) {
+            if (SPWrapper.getDefaultNet().contains(testNet)) {
+                imgPrivate.setVisibility(View.GONE);
+                return;
+            }
+        }
+        etNet.setText(SPWrapper.getDefaultNet().replace(":20334",""));
+        imgPrivate.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_custom:
-                String net = etNet.getText().toString();
+                String net = etNet.getText().toString().trim();
                 if (TextUtils.isEmpty(net)) {
                     ToastUtil.showToast(baseActivity, "net can not be null");
                 } else {
-                    setNet(net);
+                    setNet(net, true);
                 }
                 break;
             case R.id.layout_back:
@@ -90,7 +105,7 @@ public class SettingNetActivity extends BaseActivity implements View.OnClickList
         }
     }
 
-    private void setNet(String net) {
+    private void setNet(String net, boolean isPrivate) {
         SPWrapper.setDefaultNet(net + ":20334");
         SharedPreferences sp = getSharedPreferences(Constant.WALLET_FILE, Context.MODE_PRIVATE);
         SDKWrapper.initOntSDK(new SDKCallback() {
@@ -105,5 +120,8 @@ public class SettingNetActivity extends BaseActivity implements View.OnClickList
             }
         }, TAG, SPWrapper.getDefaultNet(), sp);
         ToastUtil.showToast(baseActivity, "Set Net Success");
+        netSettingAdapter.notifyDataSetChanged();
+        netSettingAdapter1.notifyDataSetChanged();
+        imgPrivate.setVisibility(isPrivate ? View.VISIBLE : View.GONE);
     }
 }
