@@ -22,7 +22,7 @@ import com.github.ont.cyanowallet.utils.ToastUtil;
 /**
  * @author zhugang
  */
-public class WakeInvokeActivity extends BaseActivity {
+public class WakeJudgeActivity extends BaseActivity {
     private TextView tvPayer;
     private TextView tvDes;
     private TextView tvConfirm;
@@ -71,19 +71,21 @@ public class WakeInvokeActivity extends BaseActivity {
                 }
                 switch (jsonObject.getString("action")) {
                     case "login":
-                        Intent intent2 = new Intent(this, ScanWalletLoginActivity.class);
+                        Intent intent2 = new Intent(this, WakeWalletLoginActivity.class);
                         intent2.putExtra(Constant.KEY, jsonObject.getJSONObject("params").toJSONString());
                         intent2.putExtra(Constant.ID, jsonObject.getString(Constant.ID));
                         intent2.putExtra(Constant.VERSION, jsonObject.getString(Constant.VERSION));
                         startActivity(intent2);
+                        overridePendingTransition(R.anim.out_top_to_bottom, R.anim.in_bottom_to_top);
                         break;
                     case "invoke":
-                        Intent intent1 = new Intent(WakeInvokeActivity.this, ScanWalletInvokeActivity.class);
+                        Intent intent1 = new Intent(WakeJudgeActivity.this, WakeWalletInvokeActivity.class);
                         intent1.putExtra(Constant.KEY, jsonObject.getJSONObject("params").toJSONString());
                         intent1.putExtra(Constant.ID, jsonObject.getString(Constant.ID));
                         intent1.putExtra(Constant.VERSION, jsonObject.getString(Constant.VERSION));
                         intent1.putExtra(Constant.ADDRESS, SPWrapper.getDefaultAddress());
                         startActivity(intent1);
+                        overridePendingTransition(R.anim.out_top_to_bottom, R.anim.in_bottom_to_top);
                         break;
                     default:
                         Toast.makeText(baseActivity, "params error", Toast.LENGTH_SHORT).show();

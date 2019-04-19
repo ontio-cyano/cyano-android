@@ -43,7 +43,7 @@
         <activity android:name=".scan.activity.CaptureActivity" />
         <activity android:name=".scan.activity.CaremaPermissionActivity" />
         <activity android:name=".scan.activity.ScanWalletLoginActivity" />
-        <activity android:name=".scan.activity.ScanWalletInvokeActivity" />
+        <activity android:name=".scan.activity.ScanWalletInvokeActivity"/>
         <activity android:name=".wallet.ExportWalletActivity" />
         <activity android:name=".wallet.ReceiverWalletActivity" />
         <activity android:name=".ontid.CreateOntIdActivity" />
@@ -62,20 +62,22 @@
         <activity android:name="com.github.ont.connector.ontid.ExportOntIdActivity" />
         <activity android:name=".wallet.WalletDetailActivity" />
         <activity
-            android:name=".wake.WakeInvokeActivity"
+            android:name=".wake.WakeJudgeActivity"
             android:launchMode="singleTop">
             <!--注册scheme-->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <!--BROWSABLE指定该Activity能被浏览器安全调用-->
-                <!--<category android:name="android.intent.category.BROWSABLE"/>-->
+                <category android:name="android.intent.category.BROWSABLE"/>
                 <!--声明自定义scheme，类似于http, https-->
                 <data
                     android:host="ont.io"
                     android:scheme="ontprovider" />
             </intent-filter>
         </activity>
+        <activity android:name=".wake.WakeWalletInvokeActivity" android:launchMode="singleTop" android:screenOrientation="portrait" android:theme="@android:style/Theme.Translucent"/>
+        <activity android:name=".wake.WakeWalletLoginActivity" android:launchMode="singleTop" android:screenOrientation="portrait" android:theme="@android:style/Theme.Translucent"/>
 
     </application>
 
