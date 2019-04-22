@@ -81,17 +81,18 @@ public class WakeWalletLoginActivity extends WakeActivity implements View.OnClic
 
         imgAnchor.setVisibility(View.GONE);
         if (TextUtils.isEmpty(type)) {
+            type="account";
             address = SPWrapper.getDefaultAddress();
         }
         switch (type) {
             case "ontid":
-                if (TextUtils.isEmpty(com.github.ont.connector.utils.SPWrapper.getDefaultOntId())){
+                if (TextUtils.isEmpty(com.github.ont.connector.utils.SPWrapper.getDefaultOntId())) {
                     showAttention("NO ONT ID,please register");
                 }
                 address = com.github.ont.connector.utils.SPWrapper.getDefaultOntId();
                 break;
             default:
-                if (TextUtils.isEmpty(SPWrapper.getDefaultAddress())){
+                if (TextUtils.isEmpty(SPWrapper.getDefaultAddress())) {
                     showAttention("NO Address,please register");
                 }
                 address = SPWrapper.getDefaultAddress();
@@ -173,17 +174,22 @@ public class WakeWalletLoginActivity extends WakeActivity implements View.OnClic
                     public void onResult(Result result) {
                         dismissLoading();
                         if (result.isSuccess) {
-                            ToastUtil.showToast(WakeWalletLoginActivity.this, "login success ");
+                            ToastUtil.showToast(WakeWalletLoginActivity.this, "success");
                             finish();
                             overridePendingTransition(R.anim.out_top_to_bottom, R.anim.in_bottom_to_top);
                         } else {
-                            showAttention((String) result.info);
+                            if (result.info != null) {
+                                showAttention(result.info.toString());
+                            }
                         }
                     }
 
                     @Override
                     public void onResultFail(Result error) {
                         dismissLoading();
+                        if (error.info != null) {
+                            showAttention(error.info.toString());
+                        }
                         ToastUtil.showToast(WakeWalletLoginActivity.this, "net error ");
                     }
                 });

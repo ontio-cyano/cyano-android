@@ -23,14 +23,13 @@ import com.github.ont.cyanowallet.utils.ToastUtil;
  * @author zhugang
  */
 public class WakeJudgeActivity extends BaseActivity {
-    private TextView tvPayer;
-    private TextView tvDes;
-    private TextView tvConfirm;
+    private TextView tv;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wake_invoke);
+        tv = (TextView) findViewById(R.id.tv);
         initData();
     }
 
@@ -56,13 +55,14 @@ public class WakeJudgeActivity extends BaseActivity {
 //            Intent intent = new Intent("android.intent.action.VIEW");
 //            intent.setData(Uri.parse("cyano://com.github.cyano?data="+data));
 //            startActivity(intent);
-            final String data = Uri.decode(new String(Base64.decode(uri.getQueryParameter("param"), Base64.NO_WRAP)));
-            if (TextUtils.isEmpty(data)) {
-                Toast.makeText(baseActivity, "params error", Toast.LENGTH_SHORT).show();
-                finish();
-                return;
-            }
+
             try {
+                final String data = Uri.decode(new String(Base64.decode(uri.getQueryParameter("param"), Base64.NO_WRAP)));
+                if (TextUtils.isEmpty(data)) {
+                    Toast.makeText(baseActivity, "params error", Toast.LENGTH_SHORT).show();
+                    finish();
+                    return;
+                }
                 JSONObject jsonObject = JSONObject.parseObject(data);
                 if (jsonObject.getJSONObject("params") == null) {
                     Toast.makeText(baseActivity, "params error", Toast.LENGTH_SHORT).show();
@@ -90,11 +90,13 @@ public class WakeJudgeActivity extends BaseActivity {
                     default:
                         Toast.makeText(baseActivity, "params error", Toast.LENGTH_SHORT).show();
                 }
+                finish();
             } catch (Exception e) {
+                tv.append(uri.toString());
+                tv.append("\n");
+                tv.append(e.toString());
                 Toast.makeText(baseActivity, "Json error", Toast.LENGTH_SHORT).show();
             }
-
-            finish();
         } else {
             Toast.makeText(baseActivity, "params error", Toast.LENGTH_SHORT).show();
             finish();

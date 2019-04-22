@@ -16,7 +16,6 @@
 package com.github.ont.cyanowallet.request;
 
 
-
 import com.github.ont.cyanowallet.network.net.BaseTask;
 import com.github.ont.cyanowallet.network.net.Result;
 import com.github.ont.cyanowallet.network.volley.Request;
@@ -41,23 +40,19 @@ public class ScanWalletLoginReq extends BaseTask {
 
     @Override
     public Result onSuccess(JSONObject jsonObject) {
-        Result result = new Result(false);
-        try {
-            if (jsonObject.getInt("error") == 0) {
-                result.isSuccess = true;
-                result.info = jsonObject.getJSONObject("result").toString();
-            } else {
-                result.info = jsonObject.getString("desc");
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return result;
+        return new Result(true);
     }
 
     @Override
     public Result onFail(VolleyError error) {
-        return new Result(false);
+        Result result = new Result(false);
+        if (error.networkResponse != null) {
+            result.info=new String(error.networkResponse.data);
+        }
+        if (result.info==null){
+            result.info="";
+        }
+        return result;
     }
 
     @Override

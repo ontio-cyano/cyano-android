@@ -76,8 +76,8 @@
                     android:scheme="ontprovider" />
             </intent-filter>
         </activity>
-        <activity android:name=".wake.WakeWalletInvokeActivity" android:launchMode="singleTop" android:screenOrientation="portrait" android:theme="@android:style/Theme.Translucent"/>
-        <activity android:name=".wake.WakeWalletLoginActivity" android:launchMode="singleTop" android:screenOrientation="portrait" android:theme="@android:style/Theme.Translucent"/>
+        <activity android:name=".wake.WakeWalletInvokeActivity" android:launchMode="singleTop"  android:theme="@android:style/Theme.Translucent"/>
+        <activity android:name=".wake.WakeWalletLoginActivity" android:launchMode="singleTop"  android:theme="@android:style/Theme.Translucent"/>
 
     </application>
 
