@@ -203,6 +203,7 @@ public class WalletFragment extends BaseFragment implements View.OnClickListener
                 if (!TextUtils.equals(claimOng, "0") && CommonUtil.formatDoubleOngToLong(ongBalance) >= Constant.FEE) {
                     claim();
                 }
+//                testOep4();
                 break;
             case R.id.btn_add:
                 break;
@@ -213,6 +214,35 @@ public class WalletFragment extends BaseFragment implements View.OnClickListener
                 break;
             default:
         }
+    }
+
+    private void testOep4() {
+        Oep4ListBean.ContractListBean bean =new Oep4ListBean.ContractListBean();
+        /**
+         * Description : contractsDescriptionTest
+         * Symbol : TNT
+         * CreateTime : 1530316800
+         * ABI : {"contractHash": "2a9cc8a5d0644283e7d7705abe5bbcb979c9bb03"}
+         * Creator : AUr5QUfeBADq6BMY6Tp5yuMsUNGpsD7nLZ
+         * TotalSupply : 1000000000
+         * Decimals : 8
+         * Code : 6a55c36a54c3936a00527ac462c8ff6161616a53c36c7566
+         * ContractHash : 49f0908f08b3ebce1e71dc5083cb9a8a54cc4a24
+         * Name : TNT coin
+         * Logo : https://luckynumber.one/index/img/logo.png
+         * OngCount : 0.000000000
+         * UpdateTime : 1545209968
+         * Addresscount : 8
+         * ContactInfo : {"Website":"https://github.com/ontio"}
+         * OntCount : 0.000000000
+         * TxCount : 851
+         */
+        bean.setSymbol("ALV");
+        bean.setDecimals(18);
+        bean.setContractHash("55e02438c938f6f4eb15a9cb315b26d0169b7fd7");
+        Intent intent = new Intent(baseActivity, Oep4TransferActivity.class);
+        intent.putExtra(Constant.KEY, JSON.toJSONString(bean));
+        startActivity(intent);
     }
 
     private PopupWindow popupWindow;

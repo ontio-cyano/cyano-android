@@ -26,6 +26,8 @@ import com.github.ont.cyanowallet.utils.SPWrapper;
 import com.github.ont.cyanowallet.utils.ToastUtil;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 /**
  * @author zhugang
@@ -60,7 +62,7 @@ public class Oep4TransferActivity extends BaseActivity implements View.OnClickLi
         btnSend = (Button) findViewById(R.id.btn_send);
         etAddress = (EditText) findViewById(R.id.et_address);
         etAmount = (EditText) findViewById(R.id.et_amount);
-        View btnCancel =  findViewById(R.id.btn_cancel);
+        View btnCancel = findViewById(R.id.btn_cancel);
 
         btnCancel.setOnClickListener(this);
         btnSend.setOnClickListener(this);
@@ -81,11 +83,18 @@ public class Oep4TransferActivity extends BaseActivity implements View.OnClickLi
                     } else {
                         BigDecimal bdBalance = new BigDecimal((String) message);
                         BigDecimal multiplicand = new BigDecimal(1);
-                        for (int i = 0; i < bean.getDecimals(); i++) {
-                            multiplicand = multiplicand.multiply(new BigDecimal(10));
+                        StringBuilder format = new StringBuilder();
+                        format.append("###,###,###,##0");
+                        if (bean.getDecimals() > 0) {
+                            format.append(".");
+                            for (int i = 0; i < bean.getDecimals(); i++) {
+                                multiplicand = multiplicand.multiply(new BigDecimal(10));
+                                format.append("0");
+                            }
                         }
                         bdBalance = bdBalance.divide(multiplicand, bean.getDecimals(), BigDecimal.ROUND_HALF_UP);
-                        oep4Balance = bdBalance.toString();
+                        NumberFormat nf = new DecimalFormat(format.toString());
+                        oep4Balance = nf.format(bdBalance);
                     }
                     if (tvBalance != null) {
                         tvBalance.setText(String.format("Balance : %s", oep4Balance));

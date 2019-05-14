@@ -424,7 +424,7 @@ public class GameWebActivity extends BaseActivity implements View.OnClickListene
                 ArrayList<String> result = (ArrayList<String>) message;
 
                 if (result != null && result.size() > 1) {
-                    com.alibaba.fastjson.JSONObject jsonObject = com.alibaba.fastjson.JSONObject.parseObject((String) result.get(0));
+                    JSONObject jsonObject = JSONObject.parseObject((String) result.get(0));
                     JSONArray notify = jsonObject.getJSONArray("Notify");
                     if (notify != null && notify.size() > 0) {
                         if (action.equals(com.github.ont.cyano.Constant.INVOKE_PASSWORD_FREE) && messages.contains(getMessage())) {

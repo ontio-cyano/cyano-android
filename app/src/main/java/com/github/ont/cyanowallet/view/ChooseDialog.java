@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.github.ont.cyanowallet.R;
 import com.github.ont.cyanowallet.utils.CommonUtil;
 import com.github.ont.cyanowallet.utils.Constant;
@@ -39,23 +40,23 @@ public class ChooseDialog extends Dialog {
         TextView tv_address_from = (TextView) inflate.findViewById(R.id.tv_address_from);
         TextView tvToTag = (TextView) inflate.findViewById(R.id.tv_to_tag);
         TextView tvFee = (TextView) inflate.findViewById(R.id.tv_fee);
-        com.alibaba.fastjson.JSONObject jsonObject = com.alibaba.fastjson.JSONObject.parseObject(showMessage);
+        JSONObject jsonObject = JSONObject.parseObject(showMessage);
         JSONArray notify = jsonObject.getJSONArray("Notify");
 
         if (notify != null && notify.size() > 0) {
             for (int i = 0; i < notify.size(); i++) {
-                JSONArray states = notify.getJSONObject(i).getJSONArray("States");
                 String contractAddress = notify.getJSONObject(i).getString("ContractAddress");
                 if (TextUtils.equals(contractAddress, Constant.ONT_CONTRACT)) {
-                    if (TextUtils.equals(states.getString(0), "transfer") && TextUtils.equals(states.getString(1), SPWrapper.getDefaultAddress())) {
+                    JSONArray states = notify.getJSONObject(i).getJSONArray("States");
+                    if (states != null && states.size() > 3 && TextUtils.equals(states.getString(0), "transfer") && TextUtils.equals(states.getString(1), SPWrapper.getDefaultAddress())) {
                         tv_pay.setText(String.format("%s ONT", states.getLong(3)));
                         tvContent.setText(states.getString(2));
                     }
                 } else if (TextUtils.equals(contractAddress, Constant.ONG_CONTRACT)) {
-                    if (TextUtils.equals(states.getString(0), "transfer") && TextUtils.equals(states.getString(1), SPWrapper.getDefaultAddress())) {
+                    JSONArray states = notify.getJSONObject(i).getJSONArray("States");
+                    if (states != null && states.size() > 3 && TextUtils.equals(states.getString(0), "transfer") && TextUtils.equals(states.getString(1), SPWrapper.getDefaultAddress())) {
                         tv_pay.setText(String.format("%s ONG", CommonUtil.formatONG(states.getLong(3) + "")));
                         tvContent.setText(states.getString(2));
-
                     }
                 }
             }
