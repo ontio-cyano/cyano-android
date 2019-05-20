@@ -35,7 +35,7 @@ public class BaseRequest extends JsonObjectRequest {
      * Content type for request.
      */
     private static final String PROTOCOL_CONTENT_TYPE =
-            String.format("application/json;");
+            String.format("application/json;charset=utf-8");
     private ParseTool parser;
     private JSONObject params;
     private ResultListener listener;
@@ -50,7 +50,7 @@ public class BaseRequest extends JsonObjectRequest {
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
         HashMap<String, String> headers = new HashMap<String, String>();
-        headers.put("Content-Type", "application/json;");
+        headers.put("Content-Type", "application/json;charset=utf-8");
         headers.put("Accept", "*/*");
         return headers;
     }
