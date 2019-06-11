@@ -18,27 +18,33 @@ package com.github.ont.cyanowallet.wake;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 import com.github.ont.cyanowallet.R;
 import com.github.ont.cyanowallet.network.net.BaseRequest;
 import com.github.ont.cyanowallet.network.net.Result;
 import com.github.ont.cyanowallet.request.ScanInvokeCallbackReq;
 import com.github.ont.cyanowallet.utils.Constant;
+import com.github.ont.cyanowallet.utils.DAppUtils;
+import com.github.ont.cyanowallet.utils.ErrorUtils;
 import com.github.ont.cyanowallet.utils.SDKCallback;
 import com.github.ont.cyanowallet.utils.SDKWrapper;
+import com.github.ont.cyanowallet.utils.SPWrapper;
 import com.github.ont.cyanowallet.utils.ToastUtil;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author zhugang
+ */
 public class WakeWalletInvokeActivity extends WakeActivity implements View.OnClickListener {
 
     TextView name;
@@ -51,6 +57,7 @@ public class WakeWalletInvokeActivity extends WakeActivity implements View.OnCli
     private String callback;
     private String id;
     private String version;
+    private String data;
     private ScanInvokeCallbackReq scanInvokeCallbackReq;
 
     @Override
@@ -72,7 +79,7 @@ public class WakeWalletInvokeActivity extends WakeActivity implements View.OnCli
     private void initData() {
         if (getIntent() != null && getIntent().getExtras() != null) {
             Bundle bundle = getIntent().getExtras();
-            String data = bundle.getString(Constant.KEY, "");
+            data = bundle.getString(Constant.KEY, "");
 //            "login": true,
 //                    "qrcodeUrl": "http://101.132.193.149:4027/qrcode/AUr5QUfeBADq6BMY6Tp5yuMsUNGpsD7nLZ",
 //                    "message": "will pay 1 ONT in this transaction",
@@ -82,7 +89,7 @@ public class WakeWalletInvokeActivity extends WakeActivity implements View.OnCli
             version = bundle.getString(Constant.VERSION, "");
             fromAddress.setText(address);
             try {
-                JSONObject jsonObject = new JSONObject(data);
+                JSONObject jsonObject = JSONObject.parseObject(data).getJSONObject("params");
                 qrcodeUrl = jsonObject.getString("qrcodeUrl");
                 callback = jsonObject.getString("callback");
             } catch (JSONException e) {
@@ -103,55 +110,73 @@ public class WakeWalletInvokeActivity extends WakeActivity implements View.OnCli
     }
 
     private void req(String password) {
+        if (TextUtils.isEmpty(qrcodeUrl)) {
+            if (DAppUtils.checkData(data, Constant.INVOKE)) {
+                handleInvokeTransaction(data, password);
+            } else {
+                ToastUtil.showToast(this, R.string.param_error);
+                finish();
+            }
+        } else {
+            showLoading();
+            SDKWrapper.scanAddSign(new SDKCallback() {
+                @Override
+                public void onSDKSuccess(String tag, final Object message) {
+                    dismissLoading();
+                    ArrayList<String> result = (ArrayList<String>) message;
+                    if (result != null && result.size() > 1) {
+                        JSONObject jsonObject = JSONObject.parseObject((String) result.get(0));
+                        JSONArray notify = jsonObject.getJSONArray("Notify");
+                        if (notify != null && notify.size() > 0) {
+                            showChooseDialog((String) result.get(0), (String) result.get(1), "");
+                        } else {
+                            sendTransaction((String) result.get(1), "");
+                        }
+                    }
+                }
+
+                @Override
+                public void onSDKFail(String tag, String message) {
+                    dismissLoading();
+                    showAttention(ErrorUtils.getErrorResult(WakeWalletInvokeActivity.this, message));
+                }
+            }, TAG, qrcodeUrl, address, password);
+        }
+    }
+
+    private void handleInvokeTransaction(final String data, String password) {
         showLoading();
-        SDKWrapper.scanAddSign(new SDKCallback() {
+        SDKWrapper.getSendAddress(new SDKCallback() {
             @Override
-            public void onSDKSuccess(String tag, final Object message) {
-                dismissLoading();
+            public void onSDKSuccess(String tag, Object message) {
+                Log.i(TAG, "onSDKSuccess: " + message);
                 ArrayList<String> result = (ArrayList<String>) message;
+
                 if (result != null && result.size() > 1) {
-                    com.alibaba.fastjson.JSONObject jsonObject = com.alibaba.fastjson.JSONObject.parseObject((String) result.get(0));
+                    JSONObject jsonObject = JSONObject.parseObject((String) result.get(0));
                     JSONArray notify = jsonObject.getJSONArray("Notify");
                     if (notify != null && notify.size() > 0) {
-                        showChooseDialog((String) result.get(0), (String) result.get(1), "");
+                        dismissLoading();
+                        showChooseDialog((String) result.get(0), (String) result.get(1), data);
                     } else {
-                        sendTransaction((String) result.get(1), "");
+                        dismissLoading();
+                        sendTransaction((String) result.get(1), data);
                     }
+                } else {
+                    ToastUtil.showToast(WakeWalletInvokeActivity.this, R.string.param_error);
+                    dismissLoading();
+                    finish();
                 }
             }
 
             @Override
             public void onSDKFail(String tag, String message) {
                 dismissLoading();
-                String error = null;
-                try {
-                    int errorCode = new JSONObject(message).optInt("Error");
-                    switch (errorCode) {
-                        case 51015:
-                        case 58018:
-                            error = "password error";
-                            break;
-                        case 58004:
-                            error = "address error";
-                            break;
-                        case 47001:
-                            error = "insufficient balance";
-                            break;
-                        default:
-                            error = "system error " + errorCode;
-                            break;
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                if (error == null) {
-                    error = "system error ";
-                }
-                showAttention(error);
+                ToastUtil.showToast(WakeWalletInvokeActivity.this, ErrorUtils.getErrorResult(WakeWalletInvokeActivity.this, message));
+                finish();
             }
-        }, TAG, qrcodeUrl, address, password);
+        }, TAG, data, password, SPWrapper.getDefaultAddress());
     }
-
 
     @Override
     protected void onDestroy() {
@@ -184,20 +209,16 @@ public class WakeWalletInvokeActivity extends WakeActivity implements View.OnCli
                 finish();
                 overridePendingTransition(R.anim.out_top_to_bottom, R.anim.in_bottom_to_top);
             } else {
-                Map map = new HashMap();
-                try {
-                    map.put("action", new JSONObject(data).getString("action"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                JSONObject map = new JSONObject();
+                map.put("action", JSONObject.parseObject(data).getString("action"));
                 map.put("version", version);
                 map.put("id", id);
                 map.put("error", 0);
                 map.put("desc", "SUCCESS");
                 map.put("result", txData);
                 try {
-                    scanInvokeCallbackReq = new ScanInvokeCallbackReq(callback, new JSONObject(JSON.toJSONString(map)));
-                } catch (JSONException e) {
+                    scanInvokeCallbackReq = new ScanInvokeCallbackReq(callback, new org.json.JSONObject(JSON.toJSONString(map)));
+                } catch (org.json.JSONException e) {
                     e.printStackTrace();
                 }
                 scanInvokeCallbackReq.setOnResultListener(new BaseRequest.ResultListener() {

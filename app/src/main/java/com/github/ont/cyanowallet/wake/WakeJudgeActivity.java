@@ -80,7 +80,7 @@ public class WakeJudgeActivity extends BaseActivity {
                         break;
                     case "invoke":
                         Intent intent1 = new Intent(WakeJudgeActivity.this, WakeWalletInvokeActivity.class);
-                        intent1.putExtra(Constant.KEY, jsonObject.getJSONObject("params").toJSONString());
+                        intent1.putExtra(Constant.KEY, data);
                         intent1.putExtra(Constant.ID, jsonObject.getString(Constant.ID));
                         intent1.putExtra(Constant.VERSION, jsonObject.getString(Constant.VERSION));
                         intent1.putExtra(Constant.ADDRESS, SPWrapper.getDefaultAddress());

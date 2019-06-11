@@ -136,7 +136,8 @@ public class ScanWalletInvokeActivity extends BaseActivity implements View.OnCli
                             error = "address error";
                             break;
                         case 47001:
-                            error = "insufficient balance";
+//                            error = "insufficient balance";
+                            error = message;
                             break;
                         default:
                             error = "system error " + errorCode;

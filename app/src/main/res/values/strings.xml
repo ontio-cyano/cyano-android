@@ -4,6 +4,16 @@
     <string name="title_ontid">Ont Id</string>
     <string name="title_app">DApp</string>
     <string name="title_mine">Setting</string>
+    <string name="tran_exceed">The number of transactions exceeds the limit</string>
+    <string name="system_error">System Error</string>
+    <string name="net_error">Network error, please check your network.</string>
+    <string name="contract_not_exist">The given contract does not exist</string>
+    <string name="insufficient_balance">Insufficient Balance</string>
+    <string name="password_error">Password Error</string>
+    <string name="address_error">Address Error</string>
+    <string name="existed">Already existed</string>
+    <string name="param_error">Param Error</string>
+    <string name="pay">Payment</string>
     <string-array name="list">
         <item>http://dappnode1.ont.io</item>
         <item>http://dappnode2.ont.io</item>

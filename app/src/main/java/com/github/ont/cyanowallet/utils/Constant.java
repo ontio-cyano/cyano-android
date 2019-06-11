@@ -37,4 +37,8 @@ public class Constant {
 
     public static final String ID="id";
     public static final String VERSION="version";
+
+    public static final String INSUFFICIENT = "insufficient";
+    public static final String CONTRACT_NOT_EXIST = "the given contract does not exist";
+    public static final String UNSOLVE_HOST = "Unable to resolve host";
 }
