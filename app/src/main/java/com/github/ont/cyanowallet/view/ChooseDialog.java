@@ -4,8 +4,11 @@ import android.app.Dialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
@@ -21,8 +24,11 @@ public class ChooseDialog extends Dialog {
     private String showMessage;
     private String transactionHex;
 
-    public ChooseDialog(Context context) {
+    public ChooseDialog(Context context, String showMessage, String transactionHex) {
         super(context);
+        this.showMessage = showMessage;
+        this.transactionHex = transactionHex;
+        init(context, transactionHex);
     }
 
     public ChooseDialog(@NonNull Context context, int themeResId, String showMessage, String transactionHex) {
@@ -34,6 +40,7 @@ public class ChooseDialog extends Dialog {
 
 
     private void init(Context context, String transactionHex) {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         View inflate = LayoutInflater.from(context).inflate(R.layout.dialog_choose, null);
         TextView tvContent = (TextView) inflate.findViewById(R.id.tv_content);
         TextView tv_pay = (TextView) inflate.findViewById(R.id.tv_pay);
@@ -98,6 +105,19 @@ public class ChooseDialog extends Dialog {
             }
         });
         setContentView(inflate);
+
+        Window window = getWindow();
+        if (window != null) {
+            window.setWindowAnimations(R.style.AnimationBottomFade);
+//        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+            WindowManager.LayoutParams attributes = window.getAttributes();
+            attributes.width = WindowManager.LayoutParams.MATCH_PARENT;
+            attributes.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            attributes.gravity = Gravity.BOTTOM;
+            // 一定要重新设置, 才能生效
+            window.setAttributes(attributes);
+            window.setBackgroundDrawableResource(R.color.transparent);
+        }
     }
 
     private ActionSure actionSure;

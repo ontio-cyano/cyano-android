@@ -39,8 +39,6 @@ import com.github.ont.cyanowallet.utils.SPWrapper;
 import com.github.ont.cyanowallet.utils.ToastUtil;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author zhugang

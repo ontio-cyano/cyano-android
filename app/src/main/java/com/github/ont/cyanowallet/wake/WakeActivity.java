@@ -236,7 +236,7 @@ class WakeActivity extends Activity {
     private ChooseDialog chooseDialog;
 
     public void showChooseDialog(String showMessage, final String hexMessage, final String data) {
-        chooseDialog = new ChooseDialog(this, R.style.dialog, showMessage, hexMessage);
+        chooseDialog = new ChooseDialog(this,showMessage, hexMessage);
         chooseDialog.setActionSure(new ChooseDialog.ActionSure() {
             @Override
             public void setActionSure() {
