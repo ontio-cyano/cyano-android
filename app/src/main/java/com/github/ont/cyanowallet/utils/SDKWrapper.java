@@ -255,7 +255,8 @@ public class SDKWrapper {
             @Override
             public void subscribe(ObservableEmitter<ArrayList<String>> emitter) throws Exception {
                 OntSdk ontSdk = OntSdk.getInstance();
-                Transaction[] transactions = ontSdk.makeTransactionByJson(data);
+                String invokeData = data.replaceAll("%address", SPWrapper.getDefaultAddress());
+                Transaction[] transactions = ontSdk.makeTransactionByJson(invokeData);
                 Transaction transaction = transactions[0];
                 if (transaction.payer.equals(new Address())) {
                     transaction.payer = Address.decodeBase58(address);

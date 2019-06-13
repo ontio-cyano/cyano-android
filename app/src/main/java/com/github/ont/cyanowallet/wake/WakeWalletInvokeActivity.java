@@ -61,6 +61,7 @@ public class WakeWalletInvokeActivity extends WakeActivity implements View.OnCli
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(TAG, "onCreate: "+getChangingConfigurations());
         setContentView(R.layout.activity_wake_wallet_invoke);
         initView();
         initData();

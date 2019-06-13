@@ -261,7 +261,7 @@ class WakeActivity extends Activity {
             @Override
             public void onSDKFail(String tag, String message) {
                 dismissLoading();
-                com.github.ont.cyanowallet.utils.ToastUtil.showToast(baseActivity, " Fail : " + message);
+                ToastUtil.showToast(baseActivity, " Fail : " + message);
             }
         }, TAG, transactionHex);
     }

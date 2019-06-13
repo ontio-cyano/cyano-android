@@ -42,9 +42,10 @@ public class DAppUtils {
     }
 
     public static boolean checkData(String data, String tag) {
+        String invokeData = data.replaceAll("%address", SPWrapper.getDefaultAddress());
         try {
             OntSdk ontSdk = OntSdk.getInstance();
-            Transaction[] transactions = ontSdk.makeTransactionByJson(data);
+            Transaction[] transactions = ontSdk.makeTransactionByJson(invokeData);
             if (transactions == null) {
                 return false;
             }

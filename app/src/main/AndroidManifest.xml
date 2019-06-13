@@ -63,7 +63,8 @@
         <activity android:name=".wallet.WalletDetailActivity" />
         <activity
             android:name=".wake.WakeJudgeActivity"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:configChanges="orientation|screenSize">
             <!--注册scheme-->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -76,8 +77,8 @@
                     android:scheme="ontprovider" />
             </intent-filter>
         </activity>
-        <activity android:name=".wake.WakeWalletInvokeActivity" android:launchMode="singleTop"  android:theme="@android:style/Theme.Translucent"/>
-        <activity android:name=".wake.WakeWalletLoginActivity" android:launchMode="singleTop"  android:theme="@android:style/Theme.Translucent"/>
+        <activity android:name=".wake.WakeWalletInvokeActivity" android:configChanges="orientation|screenSize" android:launchMode="singleTop"  android:theme="@android:style/Theme.Translucent"/>
+        <activity android:name=".wake.WakeWalletLoginActivity" android:configChanges="orientation|screenSize" android:launchMode="singleTop"  android:theme="@android:style/Theme.Translucent"/>
 
     </application>
 
