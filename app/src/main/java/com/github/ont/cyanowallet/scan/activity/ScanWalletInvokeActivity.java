@@ -105,7 +105,7 @@ public class ScanWalletInvokeActivity extends BaseActivity implements View.OnCli
 
     private void req(String password) {
         showLoading();
-        SDKWrapper.scanAddSign(new SDKCallback() {
+        SDKWrapper.wakeAddSign(new SDKCallback() {
             @Override
             public void onSDKSuccess(String tag, final Object message) {
                 dismissLoading();

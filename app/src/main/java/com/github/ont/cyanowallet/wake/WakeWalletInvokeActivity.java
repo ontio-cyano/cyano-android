@@ -27,8 +27,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.github.ont.cyanowallet.R;
+import com.github.ont.cyanowallet.beans.ONSListBean;
 import com.github.ont.cyanowallet.network.net.BaseRequest;
 import com.github.ont.cyanowallet.network.net.Result;
+import com.github.ont.cyanowallet.request.GetOnsListReq;
+import com.github.ont.cyanowallet.request.ScanGetTransactionReq;
 import com.github.ont.cyanowallet.request.ScanInvokeCallbackReq;
 import com.github.ont.cyanowallet.utils.Constant;
 import com.github.ont.cyanowallet.utils.DAppUtils;
@@ -37,8 +40,10 @@ import com.github.ont.cyanowallet.utils.SDKCallback;
 import com.github.ont.cyanowallet.utils.SDKWrapper;
 import com.github.ont.cyanowallet.utils.SPWrapper;
 import com.github.ont.cyanowallet.utils.ToastUtil;
+import com.github.ont.cyanowallet.view.dialog.ShowOnsListDialog;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author zhugang
@@ -61,7 +66,7 @@ public class WakeWalletInvokeActivity extends WakeActivity implements View.OnCli
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(TAG, "onCreate: "+getChangingConfigurations());
+        Log.i(TAG, "onCreate: " + getChangingConfigurations());
         setContentView(R.layout.activity_wake_wallet_invoke);
         initView();
         initData();
@@ -108,7 +113,7 @@ public class WakeWalletInvokeActivity extends WakeActivity implements View.OnCli
         showPasswordDialog("scan invoke");
     }
 
-    private void req(String password) {
+    private void req(final String password) {
         if (TextUtils.isEmpty(qrcodeUrl)) {
             if (DAppUtils.checkData(data, Constant.INVOKE)) {
                 handleInvokeTransaction(data, password);
@@ -118,29 +123,83 @@ public class WakeWalletInvokeActivity extends WakeActivity implements View.OnCli
             }
         } else {
             showLoading();
-            SDKWrapper.scanAddSign(new SDKCallback() {
+            ScanGetTransactionReq scanGetTransactionReq = new ScanGetTransactionReq(qrcodeUrl);
+            scanGetTransactionReq.setOnResultListener(new BaseRequest.ResultListener() {
                 @Override
-                public void onSDKSuccess(String tag, final Object message) {
-                    dismissLoading();
-                    ArrayList<String> result = (ArrayList<String>) message;
-                    if (result != null && result.size() > 1) {
-                        JSONObject jsonObject = JSONObject.parseObject((String) result.get(0));
-                        JSONArray notify = jsonObject.getJSONArray("Notify");
-                        if (notify != null && notify.size() > 0) {
-                            showChooseDialog((String) result.get(0), (String) result.get(1), "");
-                        } else {
-                            sendTransaction((String) result.get(1), "");
-                        }
+                public void onResult(Result result) {
+                    final String info = (String) result.info;
+                    if (info.contains("%domain")) {
+                        GetOnsListReq getOnsListReq = new GetOnsListReq("did:ont:AGWYQHd4bzyhrbpeYCMsxXYQcJo95VtR5q");
+                        getOnsListReq.setOnResultListener(new BaseRequest.ResultListener() {
+                            @Override
+                            public void onResult(Result result) {
+                                dismissLoading();
+                                if (result.isSuccess) {
+                                    ONSListBean onsListBean = JSONObject.parseObject((String) result.info, ONSListBean.class);
+                                    if (onsListBean.getCode() == 0) {
+                                        List<String> onsList = onsListBean.getResult();
+                                        ShowOnsListDialog showOnsListDialog = new ShowOnsListDialog(WakeWalletInvokeActivity.this);
+                                        showOnsListDialog.setData(onsList);
+                                        showOnsListDialog.setOnChooseListener(new ShowOnsListDialog.OnChooseListener() {
+                                            @Override
+                                            public void onChooseSuccess(String address) {
+                                                String domainData = info.replaceAll("%domain", address);
+                                                showLoading();
+                                                scanInvokeWithData(domainData, password);
+                                            }
+                                        });
+                                    } else {
+                                        ToastUtil.showToast(WakeWalletInvokeActivity.this, "get ons list fail");
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onResultFail(Result error) {
+                                dismissLoading();
+                                ToastUtil.showToast(WakeWalletInvokeActivity.this, "get ons list fail");
+                            }
+                        });
+                        getOnsListReq.excute();
+                    } else {
+                        scanInvokeWithData(info, password);
                     }
                 }
 
                 @Override
-                public void onSDKFail(String tag, String message) {
+                public void onResultFail(Result error) {
                     dismissLoading();
-                    showAttention(ErrorUtils.getErrorResult(WakeWalletInvokeActivity.this, message));
+                    ToastUtil.showToast(WakeWalletInvokeActivity.this, R.string.net_error);
+                    finish();
                 }
-            }, TAG, qrcodeUrl, address, password);
+            });
+            scanGetTransactionReq.excute();
         }
+    }
+
+    private void scanInvokeWithData(String info, String password) {
+        SDKWrapper.scanInvoke(new SDKCallback() {
+            @Override
+            public void onSDKSuccess(String tag, final Object message) {
+                dismissLoading();
+                ArrayList<String> result = (ArrayList<String>) message;
+                if (result != null && result.size() > 1) {
+                    JSONObject jsonObject = JSONObject.parseObject((String) result.get(0));
+                    JSONArray notify = jsonObject.getJSONArray("Notify");
+                    if (notify != null && notify.size() > 0) {
+                        showChooseDialog((String) result.get(0), (String) result.get(1), "");
+                    } else {
+                        sendTransaction((String) result.get(1), "");
+                    }
+                }
+            }
+
+            @Override
+            public void onSDKFail(String tag, String message) {
+                dismissLoading();
+                showAttention(ErrorUtils.getErrorResult(WakeWalletInvokeActivity.this, message));
+            }
+        }, TAG, info, address, password);
     }
 
     private void handleInvokeTransaction(final String data, String password) {
