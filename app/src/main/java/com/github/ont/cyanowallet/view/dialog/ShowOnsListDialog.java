@@ -10,11 +10,14 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 
 import com.github.ont.cyanowallet.R;
+import com.github.ont.cyanowallet.utils.Constant;
+import com.github.ont.cyanowallet.view.dialog.adapter.ShowOnsListAdapter;
 import com.github.ontio.sdk.wallet.Account;
 
 import java.util.ArrayList;
@@ -25,16 +28,14 @@ public class ShowOnsListDialog extends Dialog {
 
     private Context mContext;
     private List<String> data = new ArrayList<>();
+    private ShowOnsListAdapter adapter;
 
-    public ShowOnsListDialog(Context context) {
+    public ShowOnsListDialog(Context context,List<String> originData) {
         super(context);
         this.mContext = context;
-        init();
-    }
-
-    public void setData(List<String> originData) {
         data.clear();
         data.addAll(originData);
+        init();
     }
 
     private void init() {
@@ -49,11 +50,14 @@ public class ShowOnsListDialog extends Dialog {
                 dismiss();
             }
         });
+        adapter = new ShowOnsListAdapter(mContext,data);
+        listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (onChooseListener != null) {
                     onChooseListener.onChooseSuccess(data.get(i));
+                    dismiss();
                 }
             }
         });

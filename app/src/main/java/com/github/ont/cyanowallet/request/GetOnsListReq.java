@@ -38,7 +38,9 @@ public class GetOnsListReq extends BaseTask {
 
     @Override
     public Result onSuccess(JSONObject jsonObject) {
-        return new Result(true);
+        Result result = new Result(true);
+        result.info= jsonObject.toString();
+        return result;
     }
 
     @Override

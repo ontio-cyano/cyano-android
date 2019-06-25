@@ -18,6 +18,7 @@ package com.github.ont.cyanowallet.scan.activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -25,19 +26,26 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.github.ont.cyanowallet.R;
 import com.github.ont.cyanowallet.base.BaseActivity;
+import com.github.ont.cyanowallet.beans.ONSListBean;
 import com.github.ont.cyanowallet.network.net.BaseRequest;
 import com.github.ont.cyanowallet.network.net.Result;
+import com.github.ont.cyanowallet.request.GetOnsListReq;
+import com.github.ont.cyanowallet.request.ScanGetTransactionReq;
 import com.github.ont.cyanowallet.request.ScanInvokeCallbackReq;
 import com.github.ont.cyanowallet.utils.Constant;
+import com.github.ont.cyanowallet.utils.ErrorUtils;
 import com.github.ont.cyanowallet.utils.SDKCallback;
 import com.github.ont.cyanowallet.utils.SDKWrapper;
+import com.github.ont.cyanowallet.utils.SPWrapper;
 import com.github.ont.cyanowallet.utils.ToastUtil;
+import com.github.ont.cyanowallet.view.dialog.ShowOnsListDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ScanWalletInvokeActivity extends BaseActivity implements View.OnClickListener {
@@ -103,9 +111,67 @@ public class ScanWalletInvokeActivity extends BaseActivity implements View.OnCli
         showPasswordDialog("scan invoke");
     }
 
-    private void req(String password) {
-        showLoading();
-        SDKWrapper.wakeAddSign(new SDKCallback() {
+    private void req(final String password) {
+        if (TextUtils.isEmpty(qrcodeUrl)) {
+            ToastUtil.showToast(this, "qr is empty");
+        } else {
+            showLoading();
+            ScanGetTransactionReq scanGetTransactionReq = new ScanGetTransactionReq(qrcodeUrl);
+            scanGetTransactionReq.setOnResultListener(new BaseRequest.ResultListener() {
+                @Override
+                public void onResult(Result originData) {
+                    final String info = (String) originData.info;
+                    if (info.contains("%domain")) {
+                        GetOnsListReq getOnsListReq = new GetOnsListReq("did:ont:AGWYQHd4bzyhrbpeYCMsxXYQcJo95VtR5q");
+                        getOnsListReq.setOnResultListener(new BaseRequest.ResultListener() {
+                            @Override
+                            public void onResult(Result result) {
+                                dismissLoading();
+                                if (result.isSuccess) {
+                                    ONSListBean onsListBean = com.alibaba.fastjson.JSONObject.parseObject((String) result.info, ONSListBean.class);
+                                    if (onsListBean != null && onsListBean.getCode() == 0) {
+                                        List<String> onsList = onsListBean.getResult();
+                                        ShowOnsListDialog showOnsListDialog = new ShowOnsListDialog(ScanWalletInvokeActivity.this,onsList);
+                                        showOnsListDialog.setOnChooseListener(new ShowOnsListDialog.OnChooseListener() {
+                                            @Override
+                                            public void onChooseSuccess(String address) {
+                                                String domainData = info.replaceAll("%domain", address);
+                                                showLoading();
+                                                scanInvokeWithData(domainData, password);
+                                            }
+                                        });
+                                        showOnsListDialog.show();
+                                    } else {
+                                        ToastUtil.showToast(ScanWalletInvokeActivity.this, "get ons list fail");
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onResultFail(Result error) {
+                                dismissLoading();
+                                ToastUtil.showToast(ScanWalletInvokeActivity.this, "get ons list fail");
+                            }
+                        });
+                        getOnsListReq.excute();
+                    } else {
+                        scanInvokeWithData(info, password);
+                    }
+                }
+
+                @Override
+                public void onResultFail(Result error) {
+                    dismissLoading();
+                    ToastUtil.showToast(ScanWalletInvokeActivity.this, R.string.net_error);
+                    finish();
+                }
+            });
+            scanGetTransactionReq.excute();
+        }
+    }
+
+    private void scanInvokeWithData(String info, String password) {
+        SDKWrapper.scanInvoke(new SDKCallback() {
             @Override
             public void onSDKSuccess(String tag, final Object message) {
                 dismissLoading();
@@ -124,36 +190,44 @@ public class ScanWalletInvokeActivity extends BaseActivity implements View.OnCli
             @Override
             public void onSDKFail(String tag, String message) {
                 dismissLoading();
-                String error = null;
-                try {
-                    int errorCode = new JSONObject(message).optInt("Error");
-                    switch (errorCode) {
-                        case 51015:
-                        case 58018:
-                            error = "password error";
-                            break;
-                        case 58004:
-                            error = "address error";
-                            break;
-                        case 47001:
-//                            error = "insufficient balance";
-                            error = message;
-                            break;
-                        default:
-                            error = "system error " + errorCode;
-                            break;
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                if (error == null) {
-                    error = "system error ";
-                }
-                showAttention(error);
+                showAttention(ErrorUtils.getErrorResult(ScanWalletInvokeActivity.this, message));
             }
-        }, TAG, qrcodeUrl, address, password);
+        }, TAG, info, address, password);
     }
 
+    private void handleInvokeTransaction(final String data, String password) {
+        showLoading();
+        SDKWrapper.getSendAddress(new SDKCallback() {
+            @Override
+            public void onSDKSuccess(String tag, Object message) {
+                Log.i(TAG, "onSDKSuccess: " + message);
+                ArrayList<String> result = (ArrayList<String>) message;
+
+                if (result != null && result.size() > 1) {
+                    com.alibaba.fastjson.JSONObject jsonObject = com.alibaba.fastjson.JSONObject.parseObject((String) result.get(0));
+                    JSONArray notify = jsonObject.getJSONArray("Notify");
+                    if (notify != null && notify.size() > 0) {
+                        dismissLoading();
+                        showChooseDialog((String) result.get(0), (String) result.get(1), data);
+                    } else {
+                        dismissLoading();
+                        sendTransaction((String) result.get(1), data);
+                    }
+                } else {
+                    ToastUtil.showToast(ScanWalletInvokeActivity.this, R.string.param_error);
+                    dismissLoading();
+                    finish();
+                }
+            }
+
+            @Override
+            public void onSDKFail(String tag, String message) {
+                dismissLoading();
+                ToastUtil.showToast(ScanWalletInvokeActivity.this, ErrorUtils.getErrorResult(ScanWalletInvokeActivity.this, message));
+                finish();
+            }
+        }, TAG, data, password, SPWrapper.getDefaultAddress());
+    }
 
     @Override
     protected void onDestroy() {

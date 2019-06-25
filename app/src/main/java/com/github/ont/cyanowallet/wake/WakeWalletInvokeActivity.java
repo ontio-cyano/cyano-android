@@ -138,8 +138,7 @@ public class WakeWalletInvokeActivity extends WakeActivity implements View.OnCli
                                     ONSListBean onsListBean = JSONObject.parseObject((String) result.info, ONSListBean.class);
                                     if (onsListBean.getCode() == 0) {
                                         List<String> onsList = onsListBean.getResult();
-                                        ShowOnsListDialog showOnsListDialog = new ShowOnsListDialog(WakeWalletInvokeActivity.this);
-                                        showOnsListDialog.setData(onsList);
+                                        ShowOnsListDialog showOnsListDialog = new ShowOnsListDialog(WakeWalletInvokeActivity.this,onsList);
                                         showOnsListDialog.setOnChooseListener(new ShowOnsListDialog.OnChooseListener() {
                                             @Override
                                             public void onChooseSuccess(String address) {
