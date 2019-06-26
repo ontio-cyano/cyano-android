@@ -15,7 +15,6 @@
 
 package com.github.ont.cyanowallet.wake;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -27,7 +26,7 @@ import android.widget.TextView;
 import com.github.ont.cyanowallet.R;
 import com.github.ont.cyanowallet.network.net.BaseRequest;
 import com.github.ont.cyanowallet.network.net.Result;
-import com.github.ont.cyanowallet.request.ScanWalletLoginReq;
+import com.github.ont.cyanowallet.request.ScanWalletResultReq;
 import com.github.ont.cyanowallet.utils.Constant;
 import com.github.ont.cyanowallet.utils.SDKCallback;
 import com.github.ont.cyanowallet.utils.SDKWrapper;
@@ -55,7 +54,7 @@ public class WakeWalletLoginActivity extends WakeActivity implements View.OnClic
     private String id;
     private String version;
     private String type;
-    private ScanWalletLoginReq scanWalletLoginReq;
+    private ScanWalletResultReq scanWalletLoginReq;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -168,7 +167,7 @@ public class WakeWalletLoginActivity extends WakeActivity implements View.OnClic
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                scanWalletLoginReq = new ScanWalletLoginReq(url, jsonObject);
+                scanWalletLoginReq = new ScanWalletResultReq(url, jsonObject);
                 scanWalletLoginReq.setOnResultListener(new BaseRequest.ResultListener() {
                     @Override
                     public void onResult(Result result) {

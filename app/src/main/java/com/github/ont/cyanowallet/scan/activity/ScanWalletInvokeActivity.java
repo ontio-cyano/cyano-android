@@ -122,7 +122,13 @@ public class ScanWalletInvokeActivity extends BaseActivity implements View.OnCli
                 public void onResult(Result originData) {
                     final String info = (String) originData.info;
                     if (info.contains("%domain")) {
-                        GetOnsListReq getOnsListReq = new GetOnsListReq("did:ont:AGWYQHd4bzyhrbpeYCMsxXYQcJo95VtR5q");
+                        if (TextUtils.isEmpty(com.github.ont.connector.utils.SPWrapper.getDefaultOntId())) {
+                            dismissLoading();
+                            ToastUtil.showToast(ScanWalletInvokeActivity.this, R.string.ontid_error);
+                            finish();
+                            return;
+                        }
+                        GetOnsListReq getOnsListReq = new GetOnsListReq(com.github.ont.connector.utils.SPWrapper.getDefaultOntId());
                         getOnsListReq.setOnResultListener(new BaseRequest.ResultListener() {
                             @Override
                             public void onResult(Result result) {
@@ -131,7 +137,7 @@ public class ScanWalletInvokeActivity extends BaseActivity implements View.OnCli
                                     ONSListBean onsListBean = com.alibaba.fastjson.JSONObject.parseObject((String) result.info, ONSListBean.class);
                                     if (onsListBean != null && onsListBean.getCode() == 0) {
                                         List<String> onsList = onsListBean.getResult();
-                                        ShowOnsListDialog showOnsListDialog = new ShowOnsListDialog(ScanWalletInvokeActivity.this,onsList);
+                                        ShowOnsListDialog showOnsListDialog = new ShowOnsListDialog(ScanWalletInvokeActivity.this, onsList);
                                         showOnsListDialog.setOnChooseListener(new ShowOnsListDialog.OnChooseListener() {
                                             @Override
                                             public void onChooseSuccess(String address) {

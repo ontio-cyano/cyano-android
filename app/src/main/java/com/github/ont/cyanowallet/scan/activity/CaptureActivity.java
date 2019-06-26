@@ -268,80 +268,98 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
         try {
             final JSONObject jsonObject = new JSONObject(json);
             String action = jsonObject.getString("action");
-            if (TextUtils.equals(action, "login")) {
-                String defaultAddress = SPWrapper.getDefaultAddress();
-                if (!TextUtils.isEmpty(defaultAddress)) {
-                    Intent intent = new Intent(this, ScanWalletLoginActivity.class);
-                    intent.putExtra(Constant.KEY, jsonObject.getJSONObject("params").toString());
-                    try {
-                        intent.putExtra(Constant.ID, jsonObject.getString(Constant.ID));
-                        intent.putExtra(Constant.VERSION, jsonObject.getString(Constant.VERSION));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    startActivity(intent);
-                    finish();
-                } else {
-                    ToastUtil.showToast(CaptureActivity.this, "NO Wallet");
-                }
-                finish();
-            } else if (TextUtils.equals(action, "invoke")) {
-                final JSONObject params = jsonObject.getJSONObject("params");
-                showLoading();
-                SDKWrapper.verifyTX(new SDKCallback() {
-                    @Override
-                    public void onSDKSuccess(String tag, Object message) {
-                        dismissLoading();
-                        String address = (String) message;
-                        if (TextUtils.isEmpty(address)) {
-                            if (TextUtils.isEmpty(SPWrapper.getDefaultAddress())) {
-                                showAttention("NO Wallet");
-                            } else {
-                                Intent intent = new Intent(CaptureActivity.this, ScanWalletInvokeActivity.class);
-                                intent.putExtra(Constant.KEY, params.toString());
-                                intent.putExtra(Constant.ADDRESS, SPWrapper.getDefaultAddress());
-                                try {
-                                    intent.putExtra(Constant.ID, jsonObject.getString(Constant.ID));
-                                    intent.putExtra(Constant.VERSION, jsonObject.getString(Constant.VERSION));
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                                startActivity(intent);
-                                finish();
-                            }
-                        } else {
-                            Account account = SettingSingleton.getInstance().getWallet().getAccount(address);
-                            if (account == null) {
-                                showAttention("NO Wallet");
-                            } else {
-                                Intent intent = new Intent(CaptureActivity.this, ScanWalletInvokeActivity.class);
-                                intent.putExtra(Constant.KEY, params.toString());
-                                intent.putExtra(Constant.ADDRESS, address);
-                                try {
-                                    intent.putExtra(Constant.ID, jsonObject.getString(Constant.ID));
-                                    intent.putExtra(Constant.VERSION, jsonObject.getString(Constant.VERSION));
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                                startActivity(intent);
-                                finish();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onSDKFail(String tag, String message) {
-                        dismissLoading();
-                        ToastUtil.showToast(CaptureActivity.this, message);
-                        restartPreviewAfterDelay(0);
-                    }
-                }, TAG, params.getString("qrcodeUrl"));
+            switch (action) {
+                case "login":
+                case "signMessage":
+                    toLogin(jsonObject);
+                    break;
+                case "invoke":
+                    toInvoke(jsonObject);
+                    break;
+                case "onsLogin":
+                    Intent intent1 = new Intent(this, ScanOnsLoginActivity.class);
+                    intent1.putExtra(Constant.KEY, json);
+                    startActivity(intent1);
+                    break;
+                default:
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
 
+    }
+
+    private void toLogin(JSONObject jsonObject) throws Exception {
+        String defaultAddress = SPWrapper.getDefaultAddress();
+        if (!TextUtils.isEmpty(defaultAddress)) {
+            Intent intent = new Intent(this, ScanWalletLoginActivity.class);
+            intent.putExtra(Constant.KEY, jsonObject.getJSONObject("params").toString());
+            try {
+                intent.putExtra(Constant.ID, jsonObject.getString(Constant.ID));
+                intent.putExtra(Constant.VERSION, jsonObject.getString(Constant.VERSION));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            startActivity(intent);
+            finish();
+        } else {
+            ToastUtil.showToast(CaptureActivity.this, "NO Wallet");
+        }
+        finish();
+    }
+
+    private void toInvoke(final JSONObject jsonObject) throws Exception {
+        final JSONObject params = jsonObject.getJSONObject("params");
+        showLoading();
+        SDKWrapper.verifyTX(new SDKCallback() {
+            @Override
+            public void onSDKSuccess(String tag, Object message) {
+                dismissLoading();
+                String address = (String) message;
+                if (TextUtils.isEmpty(address)) {
+                    if (TextUtils.isEmpty(SPWrapper.getDefaultAddress())) {
+                        showAttention("NO Wallet");
+                    } else {
+                        Intent intent = new Intent(CaptureActivity.this, ScanWalletInvokeActivity.class);
+                        intent.putExtra(Constant.KEY, params.toString());
+                        intent.putExtra(Constant.ADDRESS, SPWrapper.getDefaultAddress());
+                        try {
+                            intent.putExtra(Constant.ID, jsonObject.getString(Constant.ID));
+                            intent.putExtra(Constant.VERSION, jsonObject.getString(Constant.VERSION));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        startActivity(intent);
+                        finish();
+                    }
+                } else {
+                    Account account = SettingSingleton.getInstance().getWallet().getAccount(address);
+                    if (account == null) {
+                        showAttention("NO Wallet");
+                    } else {
+                        Intent intent = new Intent(CaptureActivity.this, ScanWalletInvokeActivity.class);
+                        intent.putExtra(Constant.KEY, params.toString());
+                        intent.putExtra(Constant.ADDRESS, address);
+                        try {
+                            intent.putExtra(Constant.ID, jsonObject.getString(Constant.ID));
+                            intent.putExtra(Constant.VERSION, jsonObject.getString(Constant.VERSION));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+            }
+
+            @Override
+            public void onSDKFail(String tag, String message) {
+                dismissLoading();
+                ToastUtil.showToast(CaptureActivity.this, message);
+                restartPreviewAfterDelay(0);
+            }
+        }, TAG, params.getString("qrcodeUrl"));
     }
 
     private void initCamera(SurfaceHolder surfaceHolder) {

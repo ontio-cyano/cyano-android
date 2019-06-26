@@ -41,4 +41,7 @@ public class Constant {
     public static final String INSUFFICIENT = "insufficient";
     public static final String CONTRACT_NOT_EXIST = "the given contract does not exist";
     public static final String UNSOLVE_HOST = "Unable to resolve host";
+
+    public static final String ONTID="ontid";
+    public static final String ACCOUNT="account";
 }

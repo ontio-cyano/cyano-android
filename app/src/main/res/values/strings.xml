@@ -14,6 +14,7 @@
     <string name="existed">Already existed</string>
     <string name="param_error">Param Error</string>
     <string name="pay">Payment</string>
+    <string name="ontid_error">ontid is error</string>
     <string-array name="list">
         <item>http://dappnode1.ont.io</item>
         <item>http://dappnode2.ont.io</item>

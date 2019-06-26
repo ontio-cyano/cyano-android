@@ -15,7 +15,6 @@
 
 package com.github.ont.cyanowallet.request;
 
-
 import com.github.ont.cyanowallet.network.net.BaseTask;
 import com.github.ont.cyanowallet.network.net.Result;
 import com.github.ont.cyanowallet.network.volley.Request;
@@ -28,41 +27,36 @@ import org.json.JSONObject;
  * Created by shenyin.sy on 2018/3/24.
  */
 
-public class ScanWalletLoginReq extends BaseTask {
+public class OnsLoginListReq extends BaseTask {
 
-    private String url;
-    private JSONObject jsonObject;
+    private String ontid;
+    private String domain;
 
-    public ScanWalletLoginReq(String url, JSONObject jsonObject) {
-        this.url = url;
-        this.jsonObject = jsonObject;
+    public OnsLoginListReq(String ontid, String domain) {
+        this.ontid = ontid;
+        this.domain = domain;
     }
 
     @Override
     public Result onSuccess(JSONObject jsonObject) {
-        return new Result(true);
-    }
-
-    @Override
-    public Result onFail(VolleyError error) {
-        Result result = new Result(false);
-        if (error.networkResponse != null) {
-            result.info=new String(error.networkResponse.data);
-        }
-        if (result.info==null){
-            result.info="";
-        }
+        Result result = new Result(true);
+        result.info = jsonObject.toString();
         return result;
     }
 
     @Override
+    public Result onFail(VolleyError error) {
+        return new Result(false);
+    }
+
+    @Override
     public String getUrl() {
-        return url;
+        return "http://192.168.3.121:7878/api/v1/ons/list";
     }
 
     @Override
     public String getPath() {
-        return null;
+        return "";
     }
 
     @Override
@@ -72,6 +66,13 @@ public class ScanWalletLoginReq extends BaseTask {
 
     @Override
     public JSONObject getBody() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("ontid", ontid);
+            jsonObject.put("domain", domain);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return jsonObject;
     }
 }

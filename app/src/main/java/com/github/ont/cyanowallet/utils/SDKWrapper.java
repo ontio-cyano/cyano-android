@@ -555,6 +555,59 @@ public class SDKWrapper {
         });
     }
 
+    public static void scanLoginSignOns(final SDKCallback callback, final String tag, final String data, final String address, final String password, final String type, final String domain) {
+        Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                com.github.ontio.account.Account accountSign;
+                if (TextUtils.equals(type, "ontid")) {
+                    Identity identity = OntSdk.getInstance().getWalletMgr().getWallet().getIdentity(address);
+                    accountSign = OntSdk.getInstance().getWalletMgr().getAccount(identity.ontid, password, identity.controls.get(0).getSalt());
+                } else {
+                    Account account = OntSdk.getInstance().getWalletMgr().getWallet().getAccount(address);
+                    accountSign = OntSdk.getInstance().getWalletMgr().getAccount(account.address, password, account.getSalt());
+                }
+//                DataSignature sign1 = new DataSignature(OntSdk.getInstance().defaultSignScheme, accountSign, data.getBytes());
+                byte[] sign = accountSign.generateSignature(data.getBytes(), SignatureScheme.SHA256WITHECDSA, null);
+                String publicKey = Helper.toHexString(accountSign.serializePublicKey());
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("type", type);
+                jsonObject.put("domain", domain);
+                jsonObject.put("user", address);
+                jsonObject.put("message", data);
+                jsonObject.put("publickey", publicKey);
+                jsonObject.put("signature", Helper.toHexString(sign));
+                emitter.onNext(jsonObject.toString());
+                emitter.onComplete();
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<String>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(String s) {
+                callback.onSDKSuccess(tag, s);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (e.getMessage() == null) {
+                    callback.onSDKFail(tag, "");
+                } else {
+                    callback.onSDKFail(tag, e.getMessage());
+                }
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+    }
+
+
     public static void wakeAddSign(final SDKCallback callback, final String tag, final String qrcodeUrl, final String address, final String password) {
         Observable.create(new ObservableOnSubscribe<String>() {
             @Override

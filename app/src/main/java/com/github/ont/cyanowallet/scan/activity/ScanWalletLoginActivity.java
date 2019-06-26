@@ -22,14 +22,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.ont.cyanowallet.R;
 import com.github.ont.cyanowallet.base.BaseActivity;
 import com.github.ont.cyanowallet.network.net.BaseRequest;
 import com.github.ont.cyanowallet.network.net.Result;
-import com.github.ont.cyanowallet.request.ScanWalletLoginReq;
+import com.github.ont.cyanowallet.request.ScanWalletResultReq;
 import com.github.ont.cyanowallet.utils.Constant;
+import com.github.ont.cyanowallet.utils.ErrorUtils;
 import com.github.ont.cyanowallet.utils.SDKCallback;
 import com.github.ont.cyanowallet.utils.SDKWrapper;
 import com.github.ont.cyanowallet.utils.SPWrapper;
@@ -56,7 +56,7 @@ public class ScanWalletLoginActivity extends BaseActivity implements View.OnClic
     private String id;
     private String version;
     private String type;
-    private ScanWalletLoginReq scanWalletLoginReq;
+    private ScanWalletResultReq scanWalletLoginReq;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,13 +86,13 @@ public class ScanWalletLoginActivity extends BaseActivity implements View.OnClic
         }
         switch (type) {
             case "ontid":
-                if (TextUtils.isEmpty(com.github.ont.connector.utils.SPWrapper.getDefaultOntId())){
+                if (TextUtils.isEmpty(com.github.ont.connector.utils.SPWrapper.getDefaultOntId())) {
                     showAttention("NO ONT ID,please register");
                 }
                 address = com.github.ont.connector.utils.SPWrapper.getDefaultOntId();
                 break;
             default:
-                if (TextUtils.isEmpty(SPWrapper.getDefaultAddress())){
+                if (TextUtils.isEmpty(SPWrapper.getDefaultAddress())) {
                     showAttention("NO Address,please register");
                 }
                 address = SPWrapper.getDefaultAddress();
@@ -168,7 +168,7 @@ public class ScanWalletLoginActivity extends BaseActivity implements View.OnClic
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                scanWalletLoginReq = new ScanWalletLoginReq(url, jsonObject);
+                scanWalletLoginReq = new ScanWalletResultReq(url, jsonObject);
                 scanWalletLoginReq.setOnResultListener(new BaseRequest.ResultListener() {
                     @Override
                     public void onResult(Result result) {
@@ -193,27 +193,7 @@ public class ScanWalletLoginActivity extends BaseActivity implements View.OnClic
             @Override
             public void onSDKFail(String tag, String message) {
                 dismissLoading();
-                String error = null;
-                try {
-                    int errorCode = new org.json.JSONObject(message).optInt("Error");
-                    switch (errorCode) {
-                        case 51015:
-                            error = "password error ";
-                            break;
-                        case 58004:
-                            error = "address error ";
-                            break;
-                        default:
-                            error = "system error " + errorCode;
-                            break;
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                if (error == null) {
-                    error = "system error ";
-                }
-                showAttention(error);
+                showAttention(ErrorUtils.getErrorResult(ScanWalletLoginActivity.this, message));
             }
         }, TAG, message, address, password, type);
     }

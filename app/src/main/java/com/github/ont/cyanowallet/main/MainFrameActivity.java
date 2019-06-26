@@ -19,6 +19,7 @@ import com.github.ont.cyanowallet.base.BaseActivity;
 import com.github.ont.cyanowallet.base.BaseFragment;
 import com.github.ont.cyanowallet.game.GameFragment;
 import com.github.ont.cyanowallet.mine.MineFragment;
+import com.github.ont.cyanowallet.ontid.IdentityFragment;
 import com.github.ont.cyanowallet.scan.activity.CaremaPermissionActivity;
 import com.github.ont.cyanowallet.view.jptab.JPTabBar;
 import com.github.ont.cyanowallet.view.jptab.anno.NorIcons;
@@ -41,13 +42,13 @@ public class MainFrameActivity extends BaseActivity {
 //    private static final int[] TITLES = {R.string.title_wallet,R.string.title_ontid,R.string.title_app,R.string.title_mine,};
 
     @SeleIcons
-    private static final int[] SELE_ICONS = {R.drawable.tab_asset_selected, R.drawable.tab_game_select, R.drawable.tab_me_selected};
+    private static final int[] SELE_ICONS = {R.drawable.tab_asset_selected, R.drawable.tab_me_selected, R.drawable.tab_game_select, R.drawable.tab_me_selected};
 
     @NorIcons
-    private static final int[] NORMAL_ICONS = {R.drawable.tab_asset_un_selected, R.drawable.tab_game_unselect, R.drawable.tab_me_un_selected};
+    private static final int[] NORMAL_ICONS = {R.drawable.tab_asset_un_selected, R.drawable.tab_me_un_selected, R.drawable.tab_game_unselect, R.drawable.tab_me_un_selected};
 
     @Titles
-    private static final int[] TITLES = {R.string.title_wallet, R.string.title_app, R.string.title_mine,};
+    private static final int[] TITLES = {R.string.title_wallet, R.string.title_ontid, R.string.title_app, R.string.title_mine,};
     private List<Fragment> list = new ArrayList<>();
 
     @Override
@@ -97,12 +98,12 @@ public class MainFrameActivity extends BaseActivity {
         ImageView imgScan = findViewById(R.id.img_scan);
 
         BaseFragment mTab1 = new WalletFragment();
-//        BaseFragment mTab2 = new IdentityFragment();
-//        OntIdFragment mTab2 = new OntIdFragment();
+        BaseFragment mTab2 = new IdentityFragment();
         BaseFragment mTab3 = new GameFragment();
         BaseFragment mTab4 = new MineFragment();
 
         list.add(mTab1);
+        list.add(mTab2);
         list.add(mTab3);
         list.add(mTab4);
         mPager.setAdapter(new MainAdapter(getSupportFragmentManager(), list));
