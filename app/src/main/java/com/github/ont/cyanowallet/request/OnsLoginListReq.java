@@ -19,6 +19,7 @@ import com.github.ont.cyanowallet.network.net.BaseTask;
 import com.github.ont.cyanowallet.network.net.Result;
 import com.github.ont.cyanowallet.network.volley.Request;
 import com.github.ont.cyanowallet.network.volley.VolleyError;
+import com.github.ont.cyanowallet.utils.Constant;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,7 +52,7 @@ public class OnsLoginListReq extends BaseTask {
 
     @Override
     public String getUrl() {
-        return "http://192.168.3.121:7878/api/v1/ons/list";
+        return Constant.ONGS_URL;
     }
 
     @Override

@@ -44,4 +44,5 @@ public class Constant {
 
     public static final String ONTID="ontid";
     public static final String ACCOUNT="account";
+    public static final String ONGS_URL = "http://192.168.3.121:7878/api/v1/ons/list";
 }

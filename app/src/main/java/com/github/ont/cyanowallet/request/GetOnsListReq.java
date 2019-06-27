@@ -39,7 +39,7 @@ public class GetOnsListReq extends BaseTask {
     @Override
     public Result onSuccess(JSONObject jsonObject) {
         Result result = new Result(true);
-        result.info= jsonObject.toString();
+        result.info = jsonObject.toString();
         return result;
     }
 
@@ -50,7 +50,7 @@ public class GetOnsListReq extends BaseTask {
 
     @Override
     public String getUrl() {
-        return "http://192.168.3.121:7878/api/v1/ons/list/" + ontid;
+        return Constant.ONGS_URL + "/" + ontid;
     }
 
     @Override

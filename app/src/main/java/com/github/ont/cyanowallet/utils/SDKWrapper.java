@@ -401,7 +401,7 @@ public class SDKWrapper {
             public void subscribe(ObservableEmitter<String> emitter) throws Exception {
                 Transaction transaction = Transaction.deserializeFrom(Helper.hexToBytes(data));
                 boolean b = OntSdk.getInstance().getConnect().sendRawTransaction(transaction);
-                Log.i(TAG, "subscribe: "+transaction.hash().toString());
+                Log.i(TAG, "subscribe: " + transaction.hash().toString());
 //                Object smartCodeEvent = OntSdk.getInstance().getConnect().getSmartCodeEvent(transaction.hash().toString());
                 if (b) {
                     emitter.onNext(transaction.hash().toString());
@@ -708,6 +708,57 @@ public class SDKWrapper {
 
             @Override
             public void onNext(ArrayList<String> s) {
+                callback.onSDKSuccess(tag, s);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (e.getMessage() == null) {
+                    callback.onSDKFail(tag, "");
+                } else {
+                    callback.onSDKFail(tag, e.getMessage());
+                }
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+    }
+
+    public static void scanTransaction(final SDKCallback callback, final String tag, final String data, final String walletPassword, final String ontidPassword, final boolean isOntidSign) {
+        Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(final ObservableEmitter<String> emitter) throws Exception {
+                OntSdk instance = OntSdk.getInstance();
+                String invokeData = data.replaceAll("signTransaction", "invoke");
+                Transaction[] transactions = instance.makeTransactionByJson(invokeData);
+                Transaction transaction = transactions[0];
+                if (transaction.payer.equals(new Address())) {
+                    transaction.payer = Address.decodeBase58(SPWrapper.getDefaultAddress());
+                    Account account = instance.getWalletMgr().getWallet().getAccount(SPWrapper.getDefaultAddress());
+                    com.github.ontio.account.Account account1 = OntSdk.getInstance().getWalletMgr().getAccount(account.address, walletPassword, account.getSalt());
+                    instance.signTx(transaction, new com.github.ontio.account.Account[][]{{account1}});
+                }
+                if (isOntidSign) {
+                    Identity identity = OntSdk.getInstance().getWalletMgr().getWallet().getIdentity(com.github.ont.connector.utils.SPWrapper.getDefaultOntId());
+                    com.github.ontio.account.Account account1 = OntSdk.getInstance().getWalletMgr().getAccount(identity.ontid, ontidPassword, identity.controls.get(0).getSalt());
+                    instance.signTx(transaction, new com.github.ontio.account.Account[][]{{account1}});
+                }
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("signedTx", transaction.toHexString());
+                emitter.onNext(jsonObject.toString());
+                emitter.onComplete();
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<String>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(String s) {
                 callback.onSDKSuccess(tag, s);
             }
 

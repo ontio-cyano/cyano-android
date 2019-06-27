@@ -281,6 +281,11 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
                     intent1.putExtra(Constant.KEY, json);
                     startActivity(intent1);
                     break;
+                case "signTransaction":
+                    Intent intent2 = new Intent(this, ScanSignTransactionActivity.class);
+                    intent2.putExtra(Constant.KEY, json);
+                    startActivity(intent2);
+                    break;
                 default:
             }
         } catch (Exception e) {
