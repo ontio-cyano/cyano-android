@@ -143,7 +143,7 @@ public class ScanOnsLoginActivity extends BaseActivity implements View.OnClickLi
                 dismissLoading();
                 showAttention(ErrorUtils.getErrorResult(ScanOnsLoginActivity.this, message));
             }
-        }, TAG, params.getMessage(), address, pwd, Constant.ONTID, params.getDomain());
+        }, TAG, params.getMessage(), SPWrapper.getDefaultOntId(), pwd, Constant.ONTID, address);
     }
 
     @Override

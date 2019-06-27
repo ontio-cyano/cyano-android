@@ -33,12 +33,13 @@ public class SPWrapper {
             SDKWrapper.initOntSDK(SPWrapper.getDefaultNet(), getSharedPreferences());
         }
         Wallet wallet = OntSdk.getInstance().getWalletMgr().getWallet();
-        String ontid = String.format("%s%s", Common.didont, wallet.getDefaultAccountAddress());
-        Identity identity = wallet.getIdentity(ontid);
-        if (identity == null) {
-            return "";
-        }
-        return identity.ontid;
+        return wallet.getDefaultOntid();
+//        String ontid = String.format("%s%s", Common.didont, wallet.getDefaultAccountAddress());
+//        Identity identity = wallet.getIdentity(ontid);
+//        if (identity == null) {
+//            return "";
+//        }
+//        return identity.ontid;
 //        return getSharedPreferences().getString(Constant.DEFAULT_ONTID, "");
     }
 
