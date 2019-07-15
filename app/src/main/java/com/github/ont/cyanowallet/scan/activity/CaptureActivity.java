@@ -78,6 +78,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
+import java.util.Date;
 
 import core.Result;
 
@@ -316,6 +317,15 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
 
     private void toInvoke(final JSONObject jsonObject) throws Exception {
         final JSONObject params = jsonObject.getJSONObject("params");
+        boolean hasExpire = params.has("expire");
+        if (hasExpire) {
+            long expireTime = params.getLong("expire");
+            if (expireTime != 0 && new Date().after(new Date(expireTime * 1000))) {
+                ToastUtil.showToast(CaptureActivity.this, "QR expire");
+                finish();
+                return;
+            }
+        }
         showLoading();
         SDKWrapper.verifyTX(new SDKCallback() {
             @Override
