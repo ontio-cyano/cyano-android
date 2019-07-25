@@ -271,8 +271,10 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
             String action = jsonObject.getString("action");
             switch (action) {
                 case "login":
-                case "signMessage":
                     toLogin(jsonObject);
+                    break;
+                case "signMessage":
+                    toSign(jsonObject);
                     break;
                 case "invoke":
                     toInvoke(jsonObject);
@@ -300,6 +302,25 @@ public final class CaptureActivity extends BaseActivity implements SurfaceHolder
         String defaultAddress = SPWrapper.getDefaultAddress();
         if (!TextUtils.isEmpty(defaultAddress)) {
             Intent intent = new Intent(this, ScanWalletLoginActivity.class);
+            intent.putExtra(Constant.KEY, jsonObject.getJSONObject("params").toString());
+            try {
+                intent.putExtra(Constant.ID, jsonObject.getString(Constant.ID));
+                intent.putExtra(Constant.VERSION, jsonObject.getString(Constant.VERSION));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            startActivity(intent);
+            finish();
+        } else {
+            ToastUtil.showToast(CaptureActivity.this, "NO Wallet");
+        }
+        finish();
+    }
+
+    private void toSign(JSONObject jsonObject) throws Exception {
+        String defaultAddress = SPWrapper.getDefaultAddress();
+        if (!TextUtils.isEmpty(defaultAddress)) {
+            Intent intent = new Intent(this, ScanWalletSignActivity.class);
             intent.putExtra(Constant.KEY, jsonObject.getJSONObject("params").toString());
             try {
                 intent.putExtra(Constant.ID, jsonObject.getString(Constant.ID));

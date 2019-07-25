@@ -504,7 +504,7 @@ public class SDKWrapper {
         });
     }
 
-    public static void scanLoginSign(final SDKCallback callback, final String tag, final String data, final String address, final String password, final String type) {
+    public static void scanLoginSign(final SDKCallback callback, final String tag, final String data, final String address, final String password, final String type, final boolean isHex) {
         Observable.create(new ObservableOnSubscribe<String>() {
             @Override
             public void subscribe(ObservableEmitter<String> emitter) throws Exception {
@@ -517,7 +517,13 @@ public class SDKWrapper {
                     accountSign = OntSdk.getInstance().getWalletMgr().getAccount(account.address, password, account.getSalt());
                 }
 //                DataSignature sign1 = new DataSignature(OntSdk.getInstance().defaultSignScheme, accountSign, data.getBytes());
-                byte[] sign = accountSign.generateSignature(data.getBytes(), SignatureScheme.SHA256WITHECDSA, null);
+                byte[] signByte;
+                if (isHex) {
+                    signByte = Helper.hexToBytes(data);
+                } else {
+                    signByte = data.getBytes();
+                }
+                byte[] sign = accountSign.generateSignature(signByte, SignatureScheme.SHA256WITHECDSA, null);
                 String publicKey = Helper.toHexString(accountSign.serializePublicKey());
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("type", type);

@@ -35,18 +35,19 @@ import com.github.ont.cyanowallet.utils.SDKWrapper;
 import com.github.ont.cyanowallet.utils.SPWrapper;
 import com.github.ont.cyanowallet.utils.ToastUtil;
 import com.github.ont.cyanowallet.view.PasswordDialog;
+import com.github.ontio.common.Helper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class ScanWalletLoginActivity extends BaseActivity implements View.OnClickListener {
+public class ScanWalletSignActivity extends BaseActivity implements View.OnClickListener {
 
     TextView name;
     TextView fromAddress;
     ImageView imgAnchor;
 
-    private static final String TAG = "ScanWalletLoginActivity";
+    private static final String TAG = "ScanWalletSignActivity";
 
     //    private ArrayList<String> addrs = new ArrayList<>();
     private PasswordDialog passwordDialog;
@@ -57,11 +58,12 @@ public class ScanWalletLoginActivity extends BaseActivity implements View.OnClic
     private String version;
     private String type;
     private ScanWalletResultReq scanWalletLoginReq;
+    private boolean isHex;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scan_wallet_login);
+        setContentView(R.layout.activity_scan_wallet_sign);
         initData();
         initView();
     }
@@ -124,7 +126,12 @@ public class ScanWalletLoginActivity extends BaseActivity implements View.OnClic
                 message = jsonObject.getString("message");
                 url = jsonObject.getString("callback");
                 type = jsonObject.getString("type");
-            } catch (JSONException e) {
+                if (jsonObject.has("ishex")) {
+                    isHex = jsonObject.getBoolean("ishex");
+                }
+            } catch (Exception e) {
+                ToastUtil.showToast(this, "System error");
+                finish();
                 e.printStackTrace();
             }
         }
@@ -174,7 +181,7 @@ public class ScanWalletLoginActivity extends BaseActivity implements View.OnClic
                     public void onResult(Result result) {
                         dismissLoading();
                         if (result.isSuccess) {
-                            ToastUtil.showToast(ScanWalletLoginActivity.this, "login success ");
+                            ToastUtil.showToast(ScanWalletSignActivity.this, "login success ");
                             finish();
                         } else {
                             showAttention((String) result.info);
@@ -184,7 +191,7 @@ public class ScanWalletLoginActivity extends BaseActivity implements View.OnClic
                     @Override
                     public void onResultFail(Result error) {
                         dismissLoading();
-                        ToastUtil.showToast(ScanWalletLoginActivity.this, "net error ");
+                        ToastUtil.showToast(ScanWalletSignActivity.this, "net error ");
                     }
                 });
                 scanWalletLoginReq.excute();
@@ -193,9 +200,9 @@ public class ScanWalletLoginActivity extends BaseActivity implements View.OnClic
             @Override
             public void onSDKFail(String tag, String message) {
                 dismissLoading();
-                showAttention(ErrorUtils.getErrorResult(ScanWalletLoginActivity.this, message));
+                showAttention(ErrorUtils.getErrorResult(ScanWalletSignActivity.this, message));
             }
-        }, TAG, message, address, password, type,false);
+        }, TAG, message, address, password, type,isHex);
     }
 //多钱包
 //    private PopupWindow pop;

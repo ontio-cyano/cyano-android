@@ -81,6 +81,7 @@
         <activity android:name=".wake.WakeWalletLoginActivity" android:configChanges="orientation|screenSize" android:launchMode="singleTop"  android:theme="@android:style/Theme.Translucent"/>
         <activity android:name=".scan.activity.ScanOnsLoginActivity" />
         <activity android:name=".scan.activity.ScanSignTransactionActivity" />
+        <activity android:name=".scan.activity.ScanWalletSignActivity" />
 
     </application>
 

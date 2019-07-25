@@ -220,7 +220,7 @@ public class WakeWalletLoginActivity extends WakeActivity implements View.OnClic
                 }
                 showAttention(error);
             }
-        }, TAG, message, address, password, type);
+        }, TAG, message, address, password, type,false);
     }
 //多钱包
 //    private PopupWindow pop;
